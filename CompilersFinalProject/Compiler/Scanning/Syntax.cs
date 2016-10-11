@@ -8,41 +8,28 @@ namespace CompilersFinalProject.Compiler.Scanning
 {
     public static class Syntax
     {
-        private static char[] Numbers = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        private static char[] Symbols = { '<', '>', '=', '+', '-', '*', '/', '{', '}' };
         public static bool IsSymbol(char c)
         {
-            return Symbols.Contains(c);
+            return (((int)c) >= 38 && ((int)c) <= 47) || (((int)c) == 33) || (((int)c) >= 58 && ((int)c) <= 63) || (((int)c) >= 91 && ((int)c) <= 94); 
         }
 
         public static bool IsNumber(char c)
         {
-            return Numbers.Contains(c);
+            return ((int) c) >= 48 && ((int) c) <= 57;
         }
 
-        public static bool IsCharOrdinalStart(char c)
+        public static bool IsLiteralStart(char c)
         {
-            return true;
+            return (c == '"') || (c == '\'');
         }
 
-        public static bool IsStringConstantStart(char c)
+        public static bool IsLetter(char c)
         {
-            return true;
+            return (((int)c) >= 97 && ((int)c) <= 122) || (((int)c) >= 65 && ((int)c) <= 90) || ((int)c) == 95;
         }
-
-        public static bool IsStartOfKeywordOrIdent(char c)
+        public static bool IsCharacterWithinWord(char c, char startc)
         {
-            return true;
-        }
-
-        public static bool IsPartOfKeywordOrIdent(char c)
-        {
-            return true;
-        }
-
-        public static bool IsKeyword(string c)
-        {
-            return true;
+            return (((int)c) >= 32 && ((int)c) <= 126) && (c != startc);
         }
     }
 }

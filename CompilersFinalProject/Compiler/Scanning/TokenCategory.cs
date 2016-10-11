@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace CompilersFinalProject.Compiler.Scanning
 {
-    public enum TokenType
+    public enum TokenCategory
     {
-        Ident,
-        IntConst,
+        Identifier,
+        Digit,
         Keyword,
-        StrConst,
+        Literal,
         Symbol
     }
 }

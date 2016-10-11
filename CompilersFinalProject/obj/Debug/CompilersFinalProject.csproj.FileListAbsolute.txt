@@ -1,1 +1,8 @@
 C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\bin\Debug\CompilersFinalProject.exe.config
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\bin\Debug\CompilersFinalProject.exe
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\bin\Debug\CompilersFinalProject.pdb
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.csprojResolveAssemblyReference.cache
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.Properties.Resources.resources
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.csproj.GenerateResource.Cache
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.exe
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.pdb
