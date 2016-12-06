@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CompilersFinalProject.Compiler.Parsing;
 
 namespace CompilersFinalProject
 {
@@ -15,6 +16,12 @@ namespace CompilersFinalProject
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void btnCompile_Click(object sender, EventArgs e)
+        {
+            string codeToCompile = tbEditor.Text;
+            Parser parser = new Parser(codeToCompile);
         }
     }
 }

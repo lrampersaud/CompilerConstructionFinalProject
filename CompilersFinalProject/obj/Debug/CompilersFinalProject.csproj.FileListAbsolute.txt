@@ -7,3 +7,4 @@ C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFina
 C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.exe
 C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.pdb
 C:\Users\lalch\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\bin\Debug\CompilersFinalProject.exe.config
+C:\Users\lalchandra\Documents\GIT\CompilerConstructionFinalProject\CompilersFinalProject\obj\Debug\CompilersFinalProject.Form1.resources

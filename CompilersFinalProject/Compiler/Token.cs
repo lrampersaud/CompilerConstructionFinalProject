@@ -9,9 +9,9 @@ namespace CompilersFinalProject.Compiler
 {
     public class Token
     {
-        private TokenCategory _tokenCategory;
-        private TokenTypeDefinition _tokenTypeDefinition;
-        private string _value;
+        public TokenCategory _tokenCategory;
+        public TokenTypeDefinition _tokenTypeDefinition;
+        public string _value;
 
         public Token(TokenCategory symbol, TokenTypeDefinition tokenTypeDefinition, string value)
         {

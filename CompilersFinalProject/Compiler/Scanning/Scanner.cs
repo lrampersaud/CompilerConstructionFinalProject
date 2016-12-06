@@ -25,14 +25,14 @@ namespace CompilersFinalProject.Compiler.Scanning
 
 
 
-        public void Advance()
+        public Token Advance()
         {
             EatWhitespace();
 
             if (IsAtEnd)
             {
                 _done = true;
-                return;
+                return null;
             }
             var nextChar = NextChar();
             if (Syntax.IsSymbol(nextChar))
@@ -86,6 +86,8 @@ namespace CompilersFinalProject.Compiler.Scanning
             {
                 throw new CompilationException("Unexpected character: " + nextChar, _currentLine);
             }
+
+            return _currentToken;
         }
 
         private string EatWhile(Func<char, bool> isCondition)
@@ -119,7 +121,7 @@ namespace CompilersFinalProject.Compiler.Scanning
                 if (_source[_currentCharacter] == '\n')
                 {
                     this._currentLine++;
-                    this._currentCharacter = 0;
+                    this._currentCharacter++;
                 }
                 else
                 {
