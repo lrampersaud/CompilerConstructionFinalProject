@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using CompilersFinalProject.Compiler.Scanning;
 
 namespace CompilersFinalProject.Compiler.Parsing
@@ -12,75 +13,12 @@ namespace CompilersFinalProject.Compiler.Parsing
     {
         #region constants
 
-        private const int DIGIT = 1;
-        private const int LETTER = 2;
-        private const int SPACE = 3;
-        private const int SYMBOL = 4;
+        private List<string> ErrorLog { get; set; }
 
         private const int MAXBREAK = 16;
-
         private const int NAMESIZE = 32;
-
         private const int PRESIZE = 32;
-
         private const int MAX_ARRAY = 100000;
-
-        private const int TRUE = 1;
-        private const int FALSE = 0;
-
-        private const int TYPE_CHAR = 2;   //type char
-        private const int TYPE_INT = 3; //type int
-        private const int TYPE_FLOAT = 4;  //type float
-        private const int TYPE_VOID = 5; //type void
-
-        private const int op_push = 1;
-        private const int op_pushi = 2;
-        private const int op_pop = 3;
-        private const int op_popi = 4;
-        private const int op_add = 5;
-        private const int op_sub = 6;
-        private const int op_end = 7;
-        private const int op_mul = 8;
-        private const int op_div = 9;
-        private const int op_and = 10;
-        private const int op_or = 11;
-        private const int op_xor = 12;
-        private const int op_shl = 13;
-        private const int op_shr = 14;
-        private const int op_not = 15;
-        private const int op_neg = 16;
-        private const int op_fadd = 17;
-        private const int op_fend = 18;
-        private const int op_fmul = 19;
-        private const int op_fdiv = 20;
-        private const int op_fneg = 21;
-        private const int op_fnot = 22;
-        private const int op_fcon = 23;
-        private const int op_icon = 24;
-        private const int op_exch = 25;
-        private const int op_eql = 26;
-        private const int op_neq = 27;
-        private const int op_lss = 28;
-        private const int op_gtr = 29;
-        private const int op_leq = 30;
-        private const int op_geq = 31;
-        private const int op_feql = 32;
-        private const int op_fneq = 33;
-        private const int op_flss = 34;
-        private const int op_fgtr = 35;
-        private const int op_fleg = 36;
-        private const int op_fgeq = 37;
-        private const int op_printint = 38;
-        private const int op_stop = 39;
-        private const int op_dup = 40;
-        private const int op_jmp = 41;
-        private const int op_fjmp = 42;
-        private const int op_tjmp = 43;
-        private const int op_popa = 44;
-        private const int op_pusha = 45;
-        private const int op_out = 46;
-        private const int op_pushr = 47;
-
 
         //Definision for that will help with the symbol tables.
         private const int MAX = 1000;
@@ -129,9 +67,9 @@ namespace CompilersFinalProject.Compiler.Parsing
         //char TOKEN[MAX_T_SIZE];
         char BUFF; // buffer for the source char.
 
-        int CUR_TOKEN; // Token type
+        TokenTypeDefinition CUR_TOKEN; // Token type
         int CUR_VALUE; // Token value if any
-        char[] CUR_NAME = new char[NAMESIZE]; // Token name in the case of CUR_TOKEN == TK_ID
+        string CUR_NAME = ""; // Token name in the case of CUR_TOKEN == TK_ID
 
         int[] scanp = new int[10000000]; // Pointer to the corrent position on the source file
         int pointer;
@@ -246,141 +184,141 @@ namespace CompilersFinalProject.Compiler.Parsing
             {
                 case TokenTypeDefinition.TK_SLASH:
                     {
-                        printf("Expected \"/\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"/\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_NOT:
                     {
-                        printf("Expected \"!\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"!\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_MOD:
                     {
-                        printf("Expected \"%\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"%\" one line {CUR_LINE}colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_AMPER:
                     {
-                        printf("Expected \"&\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add("Expected \"&\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_LPAREN:
                     {
-                        printf("Expected \"(\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"(\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_RPAREN:
                     {
-                        printf("Expected \")\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \")\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_STAR:
                     {
-                        printf("Expected \"*\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"*\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_PLUS:
                     {
-                        printf("Expected \"+\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"+\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_COMMA:
                     {
-                        printf("Expected \",\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \",\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_MINUS:
                     {
-                        printf("Expected \"-\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"-\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_COLOM:
                     {
-                        printf("Expected \":\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add("Expected \":\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_SEMI:
                     {
-                        printf("Expected \";\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \";\" one line {CUR_LINE} colume %d source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_LESS:
                     {
-                        printf("Expected \"<\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"<\" one line {CUR_LINE}colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_ASSIGN:
                     {
-                        printf("Expected \"=\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"=\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_GREATER:
                     {
-                        printf("Expected \">\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \">\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_QMARK:
                     {
-                        printf("Expected \"?\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"?\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_LBRACK:
                     {
-                        printf("Expected \"[\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"[\" one line {CUR_LINE} colume {CUR_COL}source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_RBRACK:
                     {
-                        printf("Expected \"]\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"]\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_CARET:
                     {
-                        printf("Expected \"^\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"^\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_LBRACE:
                     {
-                        printf("Expected \"{\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"{\" one line {CUR_LINE} colume {CUR_COL}source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_RBRACE:
                     {
-                        printf("Expected \"}\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"}\" one line {CUR_LINE} colume {CUR_COL}source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                 case TokenTypeDefinition.TK_PIPE:
                     {
-                        printf("Expected \"|\" one line %d colume %d source file %s\n", CUR_LINE, CUR_COL, SOURCE[P_STACK]);
+                        ErrorLog.Add($"Expected \"|\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
                         break;
                     }
                     //// left here need to work on this.
             }
-            printf("error will matching TOKEN: %s with ID: %d", CUR_NAME, CUR_TOKEN);
-            exit(EXIT_FAILURE);
+            ErrorLog.Add($"error will matching TOKEN: {CUR_NAME} with ID: {CUR_TOKEN}");
+            Application.Exit();
         }
 
         void token()
         {
-            int chart;
+            CharacterTypeDefinition chart;
             initoken();
             chart = chartype();
-            if (chart == LETTER)
+            if (chart == CharacterTypeDefinition.LETTER)
             {
                 strlit();
                 CUR_TOKEN = keywordc(CUR_NAME);
-                CUR_VALUE = NULL;
+                CUR_VALUE = 0;
                 fprintf(sc, "%d : ", CUR_TOKEN);
                 fprintf(sc, "%s\n", CUR_NAME);
             }
-            else if (chart == DIGIT)
+            else if (chart == CharacterTypeDefinition.DIGIT)
             {
                 CUR_VALUE = intlit();
-                CUR_TOKEN = TK_INTLIT;
+                CUR_TOKEN = TokenTypeDefinition.TK_INTLIT;
                 fprintf(sc, "%d : ", CUR_TOKEN);
                 fprintf(sc, "%d\n", CUR_VALUE);
             }
-            else if (chart == SYMBOL)
+            else if (chart == CharacterTypeDefinition.SYMBOL)
             {
                 scansym();
                 if (CUR_TOKEN == NULL)
@@ -395,7 +333,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                     fprintf(sc, "%s\n", CUR_NAME);
                 }
             }
-            else if (chart == SPACE)
+            else if (chart == CharacterTypeDefinition.SPACE)
             {
                 BUFF = scanchar();
                 token();
@@ -424,55 +362,240 @@ namespace CompilersFinalProject.Compiler.Parsing
             gettoken();
         }
 
-        int chartype()
+        protected CharacterTypeDefinition chartype()
         {
             if (BUFF == '\0')
             {
-                return -1;
+                return CharacterTypeDefinition.NULL;
             }
             else if (97 <= BUFF && 122 >= BUFF)
             {
-                return LETTER;
+                return CharacterTypeDefinition.LETTER;
             }
             else if (65 <= BUFF && 90 >= BUFF)
             {
-                return LETTER;
+                return CharacterTypeDefinition.LETTER;
             }
             else if (BUFF == 95)
             {
-                return LETTER;
+                return CharacterTypeDefinition.LETTER;
             }
             else if (48 <= BUFF && 57 >= BUFF)
             {
-                return DIGIT;
+                return CharacterTypeDefinition.DIGIT;
             }
             else if (BUFF <= 32)
             {
-                return SPACE;
+                return CharacterTypeDefinition.SPACE;
             }
             else
             {
-                return SYMBOL;
+                return CharacterTypeDefinition.SYMBOL;
             }
+        }
+
+        protected TokenTypeDefinition keywordc(string c)
+        {
+            switch (c[0])
+            {
+                case 'a':
+                {
+                    if(c == "auto")
+                    {
+                        return TokenTypeDefinition.TK_AUTO;
+                    }
+                    break;
+                }
+                case 'b':
+                {
+                    if(c == "break")
+                    {
+                        return TokenTypeDefinition.TK_BREAK;
+                    }
+                    break;
+                }
+                case 'c':
+                {
+                    if(c=="case")
+                    {
+                        return TokenTypeDefinition.TK_CASE;
+                    }
+                    if(c == "char")
+                    {
+                        return TokenTypeDefinition.TK_CHAR;
+                    }
+                    if(c == "const")
+                    {
+                        return TokenTypeDefinition.TK_CONST;
+                    }
+                    if(c == "continue")
+                    {
+                        return TokenTypeDefinition.TK_CONTINUE;
+                    }
+                    break;
+                }
+                case 'd':
+                {
+                    if(c == "do")
+                    {
+                        return TokenTypeDefinition.TK_DO;
+                    }
+                    if(c == "default")
+                    {
+                        return TokenTypeDefinition.TK_DEFAULT;
+                    }
+                    if(c == "double")
+                    {
+                        return TokenTypeDefinition.TK_DOUBLE;
+                    }
+                    break;
+                }
+                case 'e':
+                {
+                    if(c == "else")
+                    {
+                        return TokenTypeDefinition.TK_ELSE;
+                    }
+                    if(c == "enum")
+                    {
+                        return TokenTypeDefinition.TK_ENUM;
+                    }
+                    if(c == "extern")
+                    {
+                        return TokenTypeDefinition.TK_EXTERN;
+                    }
+                    break;
+                }
+                case 'f':
+                {
+                    if(c == "for")
+                    {
+                        return TokenTypeDefinition.TK_FOR;
+                    }
+                    if(c == "float")
+                    {
+                        return TokenTypeDefinition.TK_FLOAT;
+                    }
+                    break;
+                }
+
+                case 'i':
+                {
+                    if(c == "if")
+                    {
+                        return TokenTypeDefinition.TK_IF;
+                    }
+                    if(c == "int")
+                    {
+                        return TokenTypeDefinition.TK_INT;
+                    }
+                    break;
+                }
+                case 'l':
+                {
+                    if(c == "long")
+                    {
+                        return TokenTypeDefinition.TK_LONG;
+                    }
+                    break;
+                }
+                case 'm':
+                {
+                    if(c == "main")
+                    {
+                        return TokenTypeDefinition.TK_MAIN;
+                    }
+                    break;
+                }
+                case 'r':
+                {
+                    if(c == "return")
+                    {
+                        return TokenTypeDefinition.TK_RETURN;
+                    }
+                    if(c == "register")
+                    {
+                        return TokenTypeDefinition.TK_REGISTER;
+                    }
+                    break;
+                }
+                case 's':
+                {
+                    if(c == "short")
+                    {
+                        return TokenTypeDefinition.TK_SHORT;
+                    }
+                    if(c == "signed")
+                    {
+                        return TokenTypeDefinition.TK_SIGNED;
+                    }
+                    if(c == "sizeof")
+                    {
+                        return TokenTypeDefinition.TK_SIZEOF;
+                    }
+                    if(c == "static")
+                    {
+                        return TokenTypeDefinition.TK_STATIC;
+                    }
+                    if(c == "struct")
+                    {
+                        return TokenTypeDefinition.TK_STRUCT;
+                    }
+                    if(c == "switch")
+                    {
+                        return TokenTypeDefinition.TK_SWITCH;
+                    }
+                    break;
+                }
+                case 't':
+                {
+                    if(c == "typedef")
+                    {
+                        return TokenTypeDefinition.TK_TYPEDEF;
+                    }
+                    break;
+                }
+                case 'v':
+                {
+                    if(c == "void")
+                    {
+                        return TokenTypeDefinition.TK_VOID;
+                    }
+                    if(c == "volatile")
+                    {
+                        return TokenTypeDefinition.TK_VOLATILE;
+                    }
+                    break;
+                }
+                case 'w':
+                {
+                    if(c == "while")
+                    {
+                        return TokenTypeDefinition.TK_WHILE;
+                    }
+                    break;
+                }
+                case '_':
+                {
+                    if(c == "__argc")
+                    {
+                        return TokenTypeDefinition.TK_ARGC;
+                    }
+                    break;
+                }
+                case 'o':
+                {
+                    if(c == "out")
+                    {
+                        return TokenTypeDefinition.TK_OUT;
+                    }
+                    break;
+                }
+            }
+            return TokenTypeDefinition.TK_ID;
         }
 
 
 
     }
-
-    struct VAR
-    {
-        int var; //TK_A_VAR, TK_AN_ARRAY, TK_A_LABEL
-        int ty; //TYPE_INT, TYPE_CHAR, TYPE_FLOAT
-        int high; //used when var == TK_AN_ARRAY else NULL
-        int addr; //Address in data[] for TK_A_VAR, TK_ALABEL and address for the first element of the array in the case of TK_AN_ARRAY
-    }
-
-
-    struct STACK
-    {
-        int i;
-        float f;
-    }
-
 }
