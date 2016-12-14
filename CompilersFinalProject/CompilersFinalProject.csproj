@@ -50,10 +50,13 @@
     <Compile Include="Compiler\CharacterTypeDefinition.cs" />
     <Compile Include="Compiler\DataTypeDefinition.cs" />
     <Compile Include="Compiler\ErrorLogger.cs" />
+    <Compile Include="Compiler\FlagTypeDefinition.cs" />
     <Compile Include="Compiler\OperationTypeDefinition.cs" />
     <Compile Include="Compiler\Parsing\Parser.cs" />
     <Compile Include="Compiler\Scanning\CompilationException.cs" />
     <Compile Include="Compiler\StackPointer.cs" />
+    <Compile Include="Compiler\SymbolStructure\SymbolBase.cs" />
+    <Compile Include="Compiler\SymbolStructure\SymbolVariable.cs" />
     <Compile Include="Compiler\TokenTypeDefinition.cs" />
     <Compile Include="Compiler\Scanning\Scanner.cs" />
     <Compile Include="Compiler\Scanning\Syntax.cs" />

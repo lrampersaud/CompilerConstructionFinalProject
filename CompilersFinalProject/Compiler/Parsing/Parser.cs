@@ -5,15 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CompilersFinalProject.Compiler.Scanning;
+using CompilersFinalProject.Compiler.SymbolStructure;
 
 namespace CompilersFinalProject.Compiler.Parsing
 {
 
     public class Parser
     {
+        public Scanner scanner { get; set; }
+        private HashSet<SymbolBase> SymbolTable { get; set; }
+        private int ip = 0;
+        private int sp = 0;
+        private int dp = 0;
+
         #region constants
 
-        private List<string> ErrorLog { get; set; }
+
+
+
+
 
         private const int MAXBREAK = 16;
         private const int NAMESIZE = 32;
@@ -29,13 +39,11 @@ namespace CompilersFinalProject.Compiler.Parsing
         #endregion
 
 
-        #region data structures used
+        #region data_structures_used
 
         char[] code = new char[MAX_ARRAY];
         char[] data = new char[MAX_ARRAY];
-        int ip = 0;
-        int sp = 0;
-        int dp = 0;
+
 
         short IFELSE = 0;
         short SWITCHCASE = 0;
@@ -67,9 +75,8 @@ namespace CompilersFinalProject.Compiler.Parsing
         //char TOKEN[MAX_T_SIZE];
         char BUFF; // buffer for the source char.
 
-        TokenTypeDefinition CUR_TOKEN; // Token type
         int CUR_VALUE; // Token value if any
-        string CUR_NAME = ""; // Token name in the case of CUR_TOKEN == TK_ID
+        string CUR_NAME = ""; // Token name in the case of scanner.CurrentToken.TokenTypeDefinition == TK_ID
 
         int[] scanp = new int[10000000]; // Pointer to the corrent position on the source file
         int pointer;
@@ -90,308 +97,115 @@ namespace CompilersFinalProject.Compiler.Parsing
         #endregion
 
 
-        public Scanner scanner { get; set; }
-        public int IP { get; set; }
-        private Token currenToken { get; set; }
-
         public Parser(string source)
         {
             scanner = new Scanner(source);
-            IP = 0;
-        }
-
-        void init()
-        {
-            CUR_LINE = LINE[P_STACK];
-            CUR_COL = COL[P_STACK];
-            pointer = POINTER[P_STACK];
-            BUFF = (char)0;
-            do
-            {
-                scanp[pointer] = getc(fd);
-            } while (scanp[pointer++] >= '\0');
+            ip = 0;
+            sp = 0;
+            dp = 0;
             pointer = 0;
+            scanner.Advance();
         }
 
-        void initarray(char?[] t, int index)
+        public void ParseHeader()
         {
-            int i;
-            index = t.Length;
-            for (i = 0; i < index; i++)
+            Match(TokenTypeDefinition.TK_PROGRAM);
+            Match(TokenTypeDefinition.TK_ID);
+
+        }
+
+        public void ParseExpressions()
+        {
+            int ty, val;
+            char[] name;
+            
+            
+            if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
             {
-                t[i] = null;
+                ty = procIDs(name, tf);
             }
-        }
-
-        //initpref
-        void initpref()
-        {
-            int i = 0;
-            for (i = 0; i < NAMESIZE; i++)
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_INT ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_CHAR ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_FLOAT)
             {
-                PREFILE[P_STACK, i] = null;
+                ty = procVAR();
             }
-        }
-
-        //scanchar
-        char scanchar()
-        {
-            if (scanp[pointer] == '\n')
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
             {
-                CUR_LINE++;
-                CUR_COL = 1;
+                ty = procRELATION();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_INTLIT)
+            {
+                ty = procLIT();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_WHILE)
+            {
+                ty = procWHILE();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_DO)
+            {
+                ty = procDO();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_FOR)
+            {
+                ty = procFOR();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_IF)
+            {
+                procIF();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ELSE)
+            {
+                procELSE();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_SWITCH)
+            {
+                procSWITCH();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_OUT)
+            {
+                procOUT();
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_COMMA)
+            {
+                ty = procRE_EXP(TRUE);
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LBRACE)
+            {
+                Match(TokenTypeDefinition.TK_LBRACE);
             }
             else
             {
-                CUR_COL++;
-            }
-            return (char)scanp[pointer++];
-        }
-
-        //initoken
-        void initoken()
-        {
-            int i;
-            CUR_TOKEN = 0;
-            CUR_VALUE = 0;
-
-            for (i = 0; i < NAMESIZE; i++)
-            {
-                CUR_NAME[i] = (char)0;
+                scanner.LogErrorToken(scanner.CurrentToken);
             }
         }
-        void Match(Token t)
-        {
 
-            if (t._tokenTypeDefinition == currenToken._tokenTypeDefinition)
+
+        public void Match(TokenTypeDefinition t)
+        {
+            if (t == scanner.CurrentToken.TokenTypeDefinition)
             {
-                token();
+                scanner.Advance();
             }
             else
             {
-                LogErrorToken(t);
+                scanner.LogErrorToken(new Token(TokenCategory.Literal, t, ""));
             }
         }
 
-        void LogErrorToken(Token t)
+
+        public void Run()
         {
-            int stop = 0;
-
-            switch (t._tokenTypeDefinition)
-            {
-                case TokenTypeDefinition.TK_SLASH:
-                    {
-                        ErrorLog.Add($"Expected \"/\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_NOT:
-                    {
-                        ErrorLog.Add($"Expected \"!\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_MOD:
-                    {
-                        ErrorLog.Add($"Expected \"%\" one line {CUR_LINE}colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_AMPER:
-                    {
-                        ErrorLog.Add("Expected \"&\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_LPAREN:
-                    {
-                        ErrorLog.Add($"Expected \"(\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_RPAREN:
-                    {
-                        ErrorLog.Add($"Expected \")\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_STAR:
-                    {
-                        ErrorLog.Add($"Expected \"*\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_PLUS:
-                    {
-                        ErrorLog.Add($"Expected \"+\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_COMMA:
-                    {
-                        ErrorLog.Add($"Expected \",\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_MINUS:
-                    {
-                        ErrorLog.Add($"Expected \"-\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_COLOM:
-                    {
-                        ErrorLog.Add("Expected \":\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_SEMI:
-                    {
-                        ErrorLog.Add($"Expected \";\" one line {CUR_LINE} colume %d source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_LESS:
-                    {
-                        ErrorLog.Add($"Expected \"<\" one line {CUR_LINE}colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_ASSIGN:
-                    {
-                        ErrorLog.Add($"Expected \"=\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_GREATER:
-                    {
-                        ErrorLog.Add($"Expected \">\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_QMARK:
-                    {
-                        ErrorLog.Add($"Expected \"?\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_LBRACK:
-                    {
-                        ErrorLog.Add($"Expected \"[\" one line {CUR_LINE} colume {CUR_COL}source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_RBRACK:
-                    {
-                        ErrorLog.Add($"Expected \"]\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_CARET:
-                    {
-                        ErrorLog.Add($"Expected \"^\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_LBRACE:
-                    {
-                        ErrorLog.Add($"Expected \"{\" one line {CUR_LINE} colume {CUR_COL}source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_RBRACE:
-                    {
-                        ErrorLog.Add($"Expected \"}\" one line {CUR_LINE} colume {CUR_COL}source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                case TokenTypeDefinition.TK_PIPE:
-                    {
-                        ErrorLog.Add($"Expected \"|\" one line {CUR_LINE} colume {CUR_COL} source file {SOURCE[P_STACK]}\n");
-                        break;
-                    }
-                    //// left here need to work on this.
-            }
-            ErrorLog.Add($"error will matching TOKEN: {CUR_NAME} with ID: {CUR_TOKEN}");
-            Application.Exit();
+            ParseHeader();
         }
 
-        void token()
-        {
-            CharacterTypeDefinition chart;
-            initoken();
-            chart = chartype();
-            if (chart == CharacterTypeDefinition.LETTER)
-            {
-                strlit();
-                CUR_TOKEN = Scanner.KeyWordID(CUR_NAME);
-                CUR_VALUE = 0;
-                fprintf(sc, "%d : ", CUR_TOKEN);
-                fprintf(sc, "%s\n", CUR_NAME);
-            }
-            else if (chart == CharacterTypeDefinition.DIGIT)
-            {
-                CUR_VALUE = intlit();
-                CUR_TOKEN = TokenTypeDefinition.TK_INTLIT;
-                fprintf(sc, "%d : ", CUR_TOKEN);
-                fprintf(sc, "%d\n", CUR_VALUE);
-            }
-            else if (chart == CharacterTypeDefinition.SYMBOL)
-            {
-                scansym();
-                if (CUR_TOKEN == NULL)
-                {
-                    BUFF = scanchar();
-                    token();
-                    putback(1);
-                }
-                else
-                {
-                    fprintf(sc, "%d : ", CUR_TOKEN);
-                    fprintf(sc, "%s\n", CUR_NAME);
-                }
-            }
-            else if (chart == CharacterTypeDefinition.SPACE)
-            {
-                BUFF = scanchar();
-                token();
-                putback(1);
-            }
-            else
-            {
-                return;
-            }
-            BUFF = scanchar();
-        }
 
-        void gettoken()
-        {
-            if (BUFF != '\0')
-            {
-                token();
-            }
-        }
 
-        //init_gettoken
-        void init_gettoken()
-        {
-            init();
-            BUFF = scanchar();
-            gettoken();
-        }
 
-        protected CharacterTypeDefinition chartype()
-        {
-            if (BUFF == '\0')
-            {
-                return CharacterTypeDefinition.NULL;
-            }
-            else if (97 <= BUFF && 122 >= BUFF)
-            {
-                return CharacterTypeDefinition.LETTER;
-            }
-            else if (65 <= BUFF && 90 >= BUFF)
-            {
-                return CharacterTypeDefinition.LETTER;
-            }
-            else if (BUFF == 95)
-            {
-                return CharacterTypeDefinition.LETTER;
-            }
-            else if (48 <= BUFF && 57 >= BUFF)
-            {
-                return CharacterTypeDefinition.DIGIT;
-            }
-            else if (BUFF <= 32)
-            {
-                return CharacterTypeDefinition.SPACE;
-            }
-            else
-            {
-                return CharacterTypeDefinition.SYMBOL;
-            }
-        }
 
-        
 
 
 

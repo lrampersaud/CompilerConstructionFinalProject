@@ -101,6 +101,8 @@ namespace CompilersFinalProject.Compiler
         TK_EMPTY = 92,
 
         TK_BOOL = 93,
-        TK_BOOLLIT = 94
+        TK_BOOLLIT = 94,
+
+        TK_PROGRAM = 95
     }
 }

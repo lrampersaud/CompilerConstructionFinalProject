@@ -9,15 +9,16 @@ namespace CompilersFinalProject.Compiler
 {
     public class Token
     {
-        public TokenCategory _tokenCategory;
-        public TokenTypeDefinition _tokenTypeDefinition;
-        public string _value;
+        public TokenCategory TokenCategory { get; }
+        public TokenTypeDefinition TokenTypeDefinition { get; };
+        public string Value { get; }
 
         public Token(TokenCategory symbol, TokenTypeDefinition tokenTypeDefinition, string value)
         {
-            this._tokenCategory = symbol;
-            this._tokenTypeDefinition = tokenTypeDefinition;
-            this._value = value;
+            this.TokenCategory = symbol;
+            this.TokenTypeDefinition = tokenTypeDefinition;
+            this.Value = value;
         }
+
     }
 }

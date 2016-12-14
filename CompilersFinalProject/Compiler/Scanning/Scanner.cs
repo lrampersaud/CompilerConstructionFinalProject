@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace CompilersFinalProject.Compiler.Scanning
         private Token _currentToken;
         private int _currentLine;
         private int _currentCharacter;
+        private int _currentErrorCharacter;
+        private List<string> ErrorLog { get; set; }
         public bool IsAtEnd { get; private set; }
 
         public Scanner(string source)
@@ -21,8 +24,10 @@ namespace CompilersFinalProject.Compiler.Scanning
             this._source = source;
             this._currentLine = 1;
             this._currentCharacter = 0;
+            ErrorLog = new List<string>();
         }
 
+        public Token CurrentToken => _currentToken;
 
 
         public Token Advance()
@@ -75,16 +80,21 @@ namespace CompilersFinalProject.Compiler.Scanning
             else if (Syntax.IsLetter(nextChar))
             {
                 var strConst = EatWhile(c => Syntax.IsLetter(c));
-                TokenTypeDefinition keywordIdentifier = KeyWordID(strConst);
+                TokenTypeDefinition keywordIdentifier = KeyWordId(strConst);
 
-                if(keywordIdentifier!= TokenTypeDefinition.TK_BOOLLIT)
-                    _currentToken = new Token((keywordIdentifier == TokenTypeDefinition.TK_ID)?TokenCategory.Identifier: TokenCategory.Keyword, keywordIdentifier, strConst);
+                if (keywordIdentifier != TokenTypeDefinition.TK_BOOLLIT)
+                    _currentToken =
+                        new Token(
+                            (keywordIdentifier == TokenTypeDefinition.TK_ID)
+                                ? TokenCategory.Identifier
+                                : TokenCategory.Keyword, keywordIdentifier, strConst);
                 else
                     _currentToken = new Token(TokenCategory.Literal, keywordIdentifier, strConst);
             }
             else
             {
-                throw new CompilationException("Unexpected character: " + nextChar, _currentLine);
+                LogErrorToken(_currentToken);
+                //throw new CompilationException("Unexpected character: " + nextChar, _currentLine);
             }
 
             return _currentToken;
@@ -121,12 +131,11 @@ namespace CompilersFinalProject.Compiler.Scanning
                 if (_source[_currentCharacter] == '\n')
                 {
                     this._currentLine++;
-                    this._currentCharacter++;
+                    this._currentErrorCharacter = 0;
                 }
-                else
-                {
-                    this._currentCharacter++;
-                }
+                
+                this._currentCharacter++;
+                
                 return _source[_currentCharacter++];
             }
             else
@@ -140,6 +149,11 @@ namespace CompilersFinalProject.Compiler.Scanning
         {
             while ((int)LookAhead() <= 32)
             {
+                if (_source[_currentCharacter] == '\n')
+                {
+                    this._currentLine++;
+                    this._currentErrorCharacter = 0;
+                }
                 _currentCharacter++;
             }
         }
@@ -473,7 +487,7 @@ namespace CompilersFinalProject.Compiler.Scanning
 
         }
 
-        public static TokenTypeDefinition KeyWordID(string c)
+        public static TokenTypeDefinition KeyWordId(string c)
         {
             switch (c[0])
             {
@@ -594,6 +608,14 @@ namespace CompilersFinalProject.Compiler.Scanning
                         }
                         break;
                     }
+                case 'p':
+                {
+                    if (c == "program")
+                    {
+                        return TokenTypeDefinition.TK_PROGRAM;
+                    }
+                    break;
+                }
                 case 'r':
                     {
                         if (c == "return")
@@ -684,6 +706,126 @@ namespace CompilersFinalProject.Compiler.Scanning
                     }
             }
             return TokenTypeDefinition.TK_ID;
+        }
+        
+        
+        public void LogErrorToken(Token t)
+        {
+            switch (t.TokenTypeDefinition)
+            {
+                case TokenTypeDefinition.TK_SLASH:
+                {
+                    ErrorLog.Add($"Expected \"/\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_NOT:
+                {
+                    ErrorLog.Add($"Expected \"!\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_MOD:
+                {
+                    ErrorLog.Add($"Expected \"%\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_AMPER:
+                {
+                    ErrorLog.Add("Expected \"&\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_LPAREN:
+                {
+                    ErrorLog.Add($"Expected \"(\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_RPAREN:
+                {
+                    ErrorLog.Add($"Expected \")\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_STAR:
+                {
+                    ErrorLog.Add($"Expected \"*\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_PLUS:
+                {
+                    ErrorLog.Add($"Expected \"+\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_COMMA:
+                {
+                    ErrorLog.Add($"Expected \",\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_MINUS:
+                {
+                    ErrorLog.Add($"Expected \"-\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_COLOM:
+                {
+                    ErrorLog.Add($"Expected \":\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_SEMI:
+                {
+                    ErrorLog.Add($"Expected \";\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_LESS:
+                {
+                    ErrorLog.Add($"Expected \"<\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_ASSIGN:
+                {
+                    ErrorLog.Add($"Expected \"=\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_GREATER:
+                {
+                    ErrorLog.Add($"Expected \">\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_QMARK:
+                {
+                    ErrorLog.Add($"Expected \"?\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_LBRACK:
+                {
+                    ErrorLog.Add($"Expected \"[\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_RBRACK:
+                {
+                    ErrorLog.Add($"Expected \"]\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_CARET:
+                {
+                    ErrorLog.Add($"Expected \"^\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_LBRACE:
+                {
+                    ErrorLog.Add("Expected \"{\" on line " + _currentLine + " column " + _currentErrorCharacter);
+                    break;
+                }
+                case TokenTypeDefinition.TK_RBRACE:
+                {
+                    ErrorLog.Add("Expected \"}\" on line " + _currentLine + " column " + _currentErrorCharacter);
+                    break;
+                }
+                case TokenTypeDefinition.TK_PIPE:
+                {
+                    ErrorLog.Add($"Expected \"|\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                //// left here need to work on this.
+            }
+            ErrorLog.Add($"Error matching TOKEN: {_currentToken.Value} with ID: {_currentToken.TokenTypeDefinition}");
         }
 
     }
