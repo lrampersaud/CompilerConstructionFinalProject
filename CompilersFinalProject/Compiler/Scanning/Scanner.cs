@@ -473,7 +473,7 @@ namespace CompilersFinalProject.Compiler.Scanning
 
         }
 
-        private TokenTypeDefinition KeyWordID(string c)
+        public static TokenTypeDefinition KeyWordID(string c)
         {
             switch (c[0])
             {

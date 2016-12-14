@@ -42,12 +42,12 @@ namespace CompilersFinalProject.Compiler.Parsing
 
 
 
-        int status = TRUE;
+        int status = (int) DataTypeDefinition.TRUE;
         int ARRAYI = 0;
 
 
 
-        STACK[] stack = new STACK[MAX_ARRAY];
+        StackPointer[] stack = new StackPointer[MAX_ARRAY];
 
         int[] s_break = new int[MAXBREAK];
         int[] s_connt = new int[MAXBREAK];
@@ -102,9 +102,6 @@ namespace CompilersFinalProject.Compiler.Parsing
 
         void init()
         {
-            //int fd;
-            //int fleng;
-
             CUR_LINE = LINE[P_STACK];
             CUR_COL = COL[P_STACK];
             pointer = POINTER[P_STACK];
@@ -172,11 +169,11 @@ namespace CompilersFinalProject.Compiler.Parsing
             }
             else
             {
-                errort(t);
+                LogErrorToken(t);
             }
         }
 
-        void errort(Token t)
+        void LogErrorToken(Token t)
         {
             int stop = 0;
 
@@ -306,7 +303,7 @@ namespace CompilersFinalProject.Compiler.Parsing
             if (chart == CharacterTypeDefinition.LETTER)
             {
                 strlit();
-                CUR_TOKEN = keywordc(CUR_NAME);
+                CUR_TOKEN = Scanner.KeyWordID(CUR_NAME);
                 CUR_VALUE = 0;
                 fprintf(sc, "%d : ", CUR_TOKEN);
                 fprintf(sc, "%s\n", CUR_NAME);
@@ -394,206 +391,7 @@ namespace CompilersFinalProject.Compiler.Parsing
             }
         }
 
-        protected TokenTypeDefinition keywordc(string c)
-        {
-            switch (c[0])
-            {
-                case 'a':
-                {
-                    if(c == "auto")
-                    {
-                        return TokenTypeDefinition.TK_AUTO;
-                    }
-                    break;
-                }
-                case 'b':
-                {
-                    if(c == "break")
-                    {
-                        return TokenTypeDefinition.TK_BREAK;
-                    }
-                    break;
-                }
-                case 'c':
-                {
-                    if(c=="case")
-                    {
-                        return TokenTypeDefinition.TK_CASE;
-                    }
-                    if(c == "char")
-                    {
-                        return TokenTypeDefinition.TK_CHAR;
-                    }
-                    if(c == "const")
-                    {
-                        return TokenTypeDefinition.TK_CONST;
-                    }
-                    if(c == "continue")
-                    {
-                        return TokenTypeDefinition.TK_CONTINUE;
-                    }
-                    break;
-                }
-                case 'd':
-                {
-                    if(c == "do")
-                    {
-                        return TokenTypeDefinition.TK_DO;
-                    }
-                    if(c == "default")
-                    {
-                        return TokenTypeDefinition.TK_DEFAULT;
-                    }
-                    if(c == "double")
-                    {
-                        return TokenTypeDefinition.TK_DOUBLE;
-                    }
-                    break;
-                }
-                case 'e':
-                {
-                    if(c == "else")
-                    {
-                        return TokenTypeDefinition.TK_ELSE;
-                    }
-                    if(c == "enum")
-                    {
-                        return TokenTypeDefinition.TK_ENUM;
-                    }
-                    if(c == "extern")
-                    {
-                        return TokenTypeDefinition.TK_EXTERN;
-                    }
-                    break;
-                }
-                case 'f':
-                {
-                    if(c == "for")
-                    {
-                        return TokenTypeDefinition.TK_FOR;
-                    }
-                    if(c == "float")
-                    {
-                        return TokenTypeDefinition.TK_FLOAT;
-                    }
-                    break;
-                }
-
-                case 'i':
-                {
-                    if(c == "if")
-                    {
-                        return TokenTypeDefinition.TK_IF;
-                    }
-                    if(c == "int")
-                    {
-                        return TokenTypeDefinition.TK_INT;
-                    }
-                    break;
-                }
-                case 'l':
-                {
-                    if(c == "long")
-                    {
-                        return TokenTypeDefinition.TK_LONG;
-                    }
-                    break;
-                }
-                case 'm':
-                {
-                    if(c == "main")
-                    {
-                        return TokenTypeDefinition.TK_MAIN;
-                    }
-                    break;
-                }
-                case 'r':
-                {
-                    if(c == "return")
-                    {
-                        return TokenTypeDefinition.TK_RETURN;
-                    }
-                    if(c == "register")
-                    {
-                        return TokenTypeDefinition.TK_REGISTER;
-                    }
-                    break;
-                }
-                case 's':
-                {
-                    if(c == "short")
-                    {
-                        return TokenTypeDefinition.TK_SHORT;
-                    }
-                    if(c == "signed")
-                    {
-                        return TokenTypeDefinition.TK_SIGNED;
-                    }
-                    if(c == "sizeof")
-                    {
-                        return TokenTypeDefinition.TK_SIZEOF;
-                    }
-                    if(c == "static")
-                    {
-                        return TokenTypeDefinition.TK_STATIC;
-                    }
-                    if(c == "struct")
-                    {
-                        return TokenTypeDefinition.TK_STRUCT;
-                    }
-                    if(c == "switch")
-                    {
-                        return TokenTypeDefinition.TK_SWITCH;
-                    }
-                    break;
-                }
-                case 't':
-                {
-                    if(c == "typedef")
-                    {
-                        return TokenTypeDefinition.TK_TYPEDEF;
-                    }
-                    break;
-                }
-                case 'v':
-                {
-                    if(c == "void")
-                    {
-                        return TokenTypeDefinition.TK_VOID;
-                    }
-                    if(c == "volatile")
-                    {
-                        return TokenTypeDefinition.TK_VOLATILE;
-                    }
-                    break;
-                }
-                case 'w':
-                {
-                    if(c == "while")
-                    {
-                        return TokenTypeDefinition.TK_WHILE;
-                    }
-                    break;
-                }
-                case '_':
-                {
-                    if(c == "__argc")
-                    {
-                        return TokenTypeDefinition.TK_ARGC;
-                    }
-                    break;
-                }
-                case 'o':
-                {
-                    if(c == "out")
-                    {
-                        return TokenTypeDefinition.TK_OUT;
-                    }
-                    break;
-                }
-            }
-            return TokenTypeDefinition.TK_ID;
-        }
+        
 
 
 

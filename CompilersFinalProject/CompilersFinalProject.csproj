@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CompilersFinalProject</RootNamespace>
     <AssemblyName>CompilersFinalProject</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -52,13 +53,13 @@
     <Compile Include="Compiler\OperationTypeDefinition.cs" />
     <Compile Include="Compiler\Parsing\Parser.cs" />
     <Compile Include="Compiler\Scanning\CompilationException.cs" />
-    <Compile Include="Compiler\STACK.cs" />
+    <Compile Include="Compiler\StackPointer.cs" />
     <Compile Include="Compiler\TokenTypeDefinition.cs" />
     <Compile Include="Compiler\Scanning\Scanner.cs" />
     <Compile Include="Compiler\Scanning\Syntax.cs" />
     <Compile Include="Compiler\Scanning\TokenCategory.cs" />
     <Compile Include="Compiler\Token.cs" />
-    <Compile Include="Compiler\VAR.cs" />
+    <Compile Include="Compiler\VariableType.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +79,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

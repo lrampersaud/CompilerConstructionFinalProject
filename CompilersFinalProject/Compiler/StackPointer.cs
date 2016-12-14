@@ -1,6 +1,6 @@
 ﻿namespace CompilersFinalProject.Compiler
 {
-    public struct STACK
+    public struct StackPointer
     {
         int i;
         float f;

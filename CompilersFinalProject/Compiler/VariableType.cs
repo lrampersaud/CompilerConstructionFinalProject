@@ -1,6 +1,6 @@
 ﻿namespace CompilersFinalProject.Compiler
 {
-    public struct VAR
+    public struct VariableType
     {
         int var; //TK_A_VAR, TK_AN_ARRAY, TK_A_LABEL
         int ty; //TYPE_INT, TYPE_CHAR, TYPE_FLOAT
