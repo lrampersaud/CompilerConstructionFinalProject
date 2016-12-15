@@ -11,7 +11,7 @@ namespace CompilersFinalProject.Compiler.Scanning
     public class Scanner
     {
         private string _source;
-        private bool _done;
+        public bool _done { get; private set; }
         private Token _currentToken;
         private int _currentLine;
         private int _currentCharacter;
@@ -334,7 +334,7 @@ namespace CompilersFinalProject.Compiler.Scanning
                     }
                 case ':':
                     {
-                        _sym_Token = TokenTypeDefinition.TK_COLOM;
+                        _sym_Token = TokenTypeDefinition.TK_COLON;
                         break;
                     }
                 case ';':
@@ -509,6 +509,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         {
                             return TokenTypeDefinition.TK_BOOL;
                         }
+                        if (c == "begin")
+                        {
+                            return TokenTypeDefinition.TK_BEGIN;
+                        }
                         break;
                     }
                 case 'c':
@@ -560,6 +564,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         if (c == "extern")
                         {
                             return TokenTypeDefinition.TK_EXTERN;
+                        }
+                        if (c == "extern")
+                        {
+                            return TokenTypeDefinition.TK_END;
                         }
                         break;
                     }
@@ -678,6 +686,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         {
                             return TokenTypeDefinition.TK_VOLATILE;
                         }
+                        if (c == "var")
+                        {
+                            return TokenTypeDefinition.TK_A_VAR;
+                        }
                         break;
                     }
                 case 'w':
@@ -706,6 +718,19 @@ namespace CompilersFinalProject.Compiler.Scanning
                     }
             }
             return TokenTypeDefinition.TK_ID;
+        }
+
+
+        public void Match(TokenTypeDefinition t)
+        {
+            if (t == this.CurrentToken.TokenTypeDefinition)
+            {
+                Advance();
+            }
+            else
+            {
+                this.LogErrorToken(new Token(TokenCategory.Literal, t, ""));
+            }
         }
         
         
@@ -763,7 +788,7 @@ namespace CompilersFinalProject.Compiler.Scanning
                     ErrorLog.Add($"Expected \"-\" on line {_currentLine} column {_currentErrorCharacter}");
                     break;
                 }
-                case TokenTypeDefinition.TK_COLOM:
+                case TokenTypeDefinition.TK_COLON:
                 {
                     ErrorLog.Add($"Expected \":\" on line {_currentLine} column {_currentErrorCharacter}");
                     break;
@@ -821,6 +846,11 @@ namespace CompilersFinalProject.Compiler.Scanning
                 case TokenTypeDefinition.TK_PIPE:
                 {
                     ErrorLog.Add($"Expected \"|\" on line {_currentLine} column {_currentErrorCharacter}");
+                    break;
+                }
+                case TokenTypeDefinition.TK_MULTIPLE_DECLARATIONS:
+                {
+                    ErrorLog.Add($"Multiple Declarations found on line {_currentLine} column {_currentErrorCharacter}");
                     break;
                 }
                 //// left here need to work on this.

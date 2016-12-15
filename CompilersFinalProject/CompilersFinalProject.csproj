@@ -54,6 +54,7 @@
     <Compile Include="Compiler\OperationTypeDefinition.cs" />
     <Compile Include="Compiler\Parsing\Parser.cs" />
     <Compile Include="Compiler\Scanning\CompilationException.cs" />
+    <Compile Include="Compiler\SemanticAnalysis\SemanticAnalyzer.cs" />
     <Compile Include="Compiler\StackPointer.cs" />
     <Compile Include="Compiler\SymbolStructure\SymbolBase.cs" />
     <Compile Include="Compiler\SymbolStructure\SymbolVariable.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Compiler\Scanning\Syntax.cs" />
     <Compile Include="Compiler\Scanning\TokenCategory.cs" />
     <Compile Include="Compiler\Token.cs" />
+    <Compile Include="Compiler\TokenTypeValue.cs" />
     <Compile Include="Compiler\VariableType.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

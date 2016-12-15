@@ -10,7 +10,7 @@ namespace CompilersFinalProject.Compiler
     public class Token
     {
         public TokenCategory TokenCategory { get; }
-        public TokenTypeDefinition TokenTypeDefinition { get; };
+        public TokenTypeDefinition TokenTypeDefinition { get; }
         public string Value { get; }
 
         public Token(TokenCategory symbol, TokenTypeDefinition tokenTypeDefinition, string value)

@@ -1,0 +1,3 @@
+/Users/ravirampersaud/GIT/CompilerConstructionFinalProject/CompilersFinalProject/obj/Debug/.NETFramework,Version=v4.6.1.AssemblyAttribute.cs
+/Users/ravirampersaud/GIT/CompilerConstructionFinalProject/CompilersFinalProject/obj/Debug/CompilersFinalProject.Form1.resources
+/Users/ravirampersaud/GIT/CompilerConstructionFinalProject/CompilersFinalProject/obj/Debug/CompilersFinalProject.Properties.Resources.resources

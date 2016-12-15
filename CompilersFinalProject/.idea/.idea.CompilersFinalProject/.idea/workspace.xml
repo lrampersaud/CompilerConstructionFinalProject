@@ -15,27 +15,64 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
+  <component name="ErrorTreeViewConfiguration">
+    <option name="hideWarnings" value="true" />
+    <option name="HIDE_WARNINGS" value="true" />
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="CompilersFinalProject" />
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Parser.cs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Parser.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../Compiler/Parsing/Parser.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-594">
-              <caret line="137" column="33" selection-start-line="137" selection-start-column="33" selection-end-line="137" selection-end-column="33" />
+            <state relative-caret-position="287">
+              <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
               <folding>
-                <marker date="1481695706000" expanded="true" signature="294:5975" ph="{...}" />
-                <marker date="1481695706000" expanded="true" signature="321:5973" ph="{...}" />
-                <marker date="1481695706000" expanded="true" signature="929:1127" ph="data structures used" />
-                <marker date="1481695706000" expanded="true" signature="929:2443" ph="data_structures_used" />
-                <marker date="1481695706000" expanded="true" signature="2482:2661" ph="{...}" />
-                <marker date="1481695706000" expanded="true" signature="2696:2814" ph="{...}" />
-                <marker date="1481695706000" expanded="true" signature="2854:5562" ph="{...}" />
-                <marker date="1481695706000" expanded="true" signature="5613:5884" ph="{...}" />
-                <marker date="1481695706000" expanded="true" signature="5912:5959" ph="{...}" />
+                <marker date="1481790365000" expanded="true" signature="349:3938" ph="{...}" />
+                <marker date="1481790365000" expanded="true" signature="376:3936" ph="{...}" />
+                <marker date="1481790365000" expanded="true" signature="531:689" ph="{...}" />
+                <marker date="1481790365000" expanded="true" signature="724:858" ph="{...}" />
+                <marker date="1481790365000" expanded="true" signature="898:3743" ph="{...}" />
+                <marker date="1481790365000" expanded="true" signature="3774:3922" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SemanticAnalyzer.cs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../../Compiler/SemanticAnalysis/SemanticAnalyzer.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="251">
+              <caret line="135" column="44" selection-start-line="135" selection-start-column="44" selection-end-line="135" selection-end-column="44" />
+              <folding>
+                <marker date="1481790084000" expanded="true" signature="6:205" ph="..." />
+                <marker date="1481790084000" expanded="true" signature="264:17668" ph="{...}" />
+                <marker date="1481790084000" expanded="true" signature="300:17666" ph="{...}" />
+                <marker date="1481790084000" expanded="true" signature="748:986" ph="{...}" />
+                <marker date="1481790084000" expanded="false" signature="1030:4205" ph="{...}" />
+                <marker date="1481790084000" expanded="true" signature="1529:1721" ph="{...}" />
+                <marker date="1481790084000" expanded="true" signature="6957:7480" ph="{...}" />
+                <marker date="1481790084000" expanded="false" signature="7590:13246" ph="{...}" />
+                <marker date="1481790084000" expanded="false" signature="13307:17120" ph="{...}" />
+                <marker date="1481790084000" expanded="true" signature="17008:17096" ph="/* printf(&quot;\nRun time error: Out of range Code\n&quot;); ... */" />
+                <marker date="1481790084000" expanded="true" signature="17158:17226" ph="{...}" />
+                <marker date="1481790084000" expanded="true" signature="17262:17438" ph="{...}" />
+                <marker date="1481790084000" expanded="true" signature="17479:17655" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TokenTypeValue.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../Compiler/TokenTypeValue.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="30" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
+              <folding>
+                <marker date="1481784650000" expanded="true" signature="307:428" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -44,21 +81,22 @@
       <file leaf-file-name="Scanner.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../Compiler/Scanning/Scanner.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="87" column="35" selection-start-line="87" selection-start-column="35" selection-end-line="87" selection-end-column="35" />
+            <state relative-caret-position="-1101">
+              <caret line="64" column="59" selection-start-line="64" selection-start-column="46" selection-end-line="64" selection-end-column="59" />
               <folding>
-                <marker date="1481694934000" expanded="true" signature="6:146" ph="..." />
-                <marker date="1481694934000" expanded="true" signature="197:30810" ph="{...}" />
-                <marker date="1481694934000" expanded="true" signature="318:30808" ph="{...}" />
-                <marker date="1481694934000" expanded="true" signature="679:852" ph="{...}" />
-                <marker date="1481694934000" expanded="true" signature="938:3820" ph="{...}" />
-                <marker date="1481694934000" expanded="true" signature="3883:4119" ph="{...}" />
-                <marker date="1481694934000" expanded="true" signature="4153:4378" ph="{...}" />
-                <marker date="1481694934000" expanded="true" signature="4411:4932" ph="{...}" />
-                <marker date="1481694934000" expanded="false" signature="4970:5284" ph="{...}" />
-                <marker date="1481694934000" expanded="false" signature="5334:17980" ph="{...}" />
-                <marker date="1481694934000" expanded="true" signature="18043:25582" ph="{...}" />
-                <marker date="1481694934000" expanded="false" signature="25643:30801" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="6:146" ph="..." />
+                <marker date="1481780761000" expanded="true" signature="197:31863" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="318:31861" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="699:872" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="958:3840" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="3903:4139" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="4173:4398" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="4431:4952" ph="{...}" />
+                <marker date="1481780761000" expanded="false" signature="4990:5304" ph="{...}" />
+                <marker date="1481780761000" expanded="false" signature="5354:18000" ph="{...}" />
+                <marker date="1481780761000" expanded="false" signature="18063:26076" ph="{...}" />
+                <marker date="1481780761000" expanded="true" signature="26127:26384" ph="{...}" />
+                <marker date="1481780761000" expanded="false" signature="26445:31854" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -67,11 +105,11 @@
       <file leaf-file-name="TokenTypeDefinition.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../Compiler/TokenTypeDefinition.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="531">
-              <caret line="105" column="18" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="18" />
+            <state relative-caret-position="246">
+              <caret line="88" column="23" selection-start-line="88" selection-start-column="23" selection-end-line="88" selection-end-column="23" />
               <folding>
-                <marker date="1481694260000" expanded="true" signature="55:2348" ph="{...}" />
-                <marker date="1481694260000" expanded="true" signature="93:2346" ph="{...}" />
+                <marker date="1481780719000" expanded="true" signature="55:2429" ph="{...}" />
+                <marker date="1481780719000" expanded="true" signature="93:2427" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -80,26 +118,13 @@
       <file leaf-file-name="Token.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../Compiler/Token.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="51" selection-start-line="11" selection-start-column="51" selection-end-line="11" selection-end-column="51" />
+            <state relative-caret-position="225">
+              <caret line="15" column="96" selection-start-line="15" selection-start-column="91" selection-end-line="15" selection-end-column="96" />
               <folding>
-                <marker date="1481693214000" expanded="true" signature="6:162" ph="..." />
-                <marker date="1481693214000" expanded="true" signature="204:650" ph="{...}" />
-                <marker date="1481693214000" expanded="true" signature="229:648" ph="{...}" />
-                <marker date="1481693214000" expanded="true" signature="488:641" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DataTypeDefinition.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../Compiler/DataTypeDefinition.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="37" selection-start-line="7" selection-start-column="8" selection-end-line="9" selection-end-column="37" />
-              <folding>
-                <marker date="1481689773000" expanded="true" signature="41:268" ph="{...}" />
-                <marker date="1481689773000" expanded="true" signature="78:266" ph="{...}" />
+                <marker date="1481783721000" expanded="true" signature="6:162" ph="..." />
+                <marker date="1481783721000" expanded="true" signature="204:649" ph="{...}" />
+                <marker date="1481783721000" expanded="true" signature="229:647" ph="{...}" />
+                <marker date="1481783721000" expanded="true" signature="487:640" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -109,23 +134,10 @@
         <entry file="file://$PROJECT_DIR$/../../Compiler/SymbolStructure/SymbolVariable.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
-              <caret line="6" column="64" selection-start-line="6" selection-start-column="64" selection-end-line="6" selection-end-column="64" />
+              <caret line="6" column="66" selection-start-line="6" selection-start-column="66" selection-end-line="6" selection-end-column="66" />
               <folding>
                 <marker date="1481690609000" expanded="true" signature="56:288" ph="{...}" />
                 <marker date="1481690609000" expanded="true" signature="102:286" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FlagTypeDefinition.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../Compiler/FlagTypeDefinition.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="5" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
-              <folding>
-                <marker date="1481690609000" expanded="true" signature="40:176" ph="{...}" />
-                <marker date="1481690609000" expanded="true" signature="77:174" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -141,13 +153,16 @@
         <option value="$PROJECT_DIR$/../../Compiler/STRUCT.cs" />
         <option value="$PROJECT_DIR$/../../Compiler/ErrorLogger.cs" />
         <option value="$PROJECT_DIR$/../../Compiler/CharacterTypeDefinition.cs" />
-        <option value="$PROJECT_DIR$/../../Compiler/DataTypeDefinition.cs" />
         <option value="$PROJECT_DIR$/../../Compiler/SymbolStructure/SymbolBase.cs" />
         <option value="$PROJECT_DIR$/../../Compiler/FlagTypeDefinition.cs" />
         <option value="$PROJECT_DIR$/../../Compiler/SymbolStructure/SymbolVariable.cs" />
-        <option value="$PROJECT_DIR$/../../Compiler/Token.cs" />
-        <option value="$PROJECT_DIR$/../../Compiler/TokenTypeDefinition.cs" />
+        <option value="$PROJECT_DIR$/../../Compiler/VariableType.cs" />
+        <option value="$PROJECT_DIR$/../../Compiler/DataTypeDefinition.cs" />
         <option value="$PROJECT_DIR$/../../Compiler/Scanning/Scanner.cs" />
+        <option value="$PROJECT_DIR$/../../Compiler/TokenTypeDefinition.cs" />
+        <option value="$PROJECT_DIR$/../../Compiler/Token.cs" />
+        <option value="$PROJECT_DIR$/../../Compiler/TokenTypeValue.cs" />
+        <option value="$PROJECT_DIR$/../../Compiler/SemanticAnalysis/SemanticAnalyzer.cs" />
         <option value="$PROJECT_DIR$/../../Compiler/Parsing/Parser.cs" />
       </list>
     </option>
@@ -234,7 +249,7 @@
               <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="SymbolStructure" />
+              <option name="myItemId" value="SemanticAnalysis" />
               <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
           </PATH>
@@ -320,6 +335,9 @@
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
   </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="d535bf32-4212-4477-aa41-4641123eee9b" name="Default" comment="" />
@@ -327,12 +345,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1481608029042</updated>
-      <workItem from="1481608031502" duration="9761000" />
+      <workItem from="1481608031502" duration="25160000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9761000" />
+    <option name="totallyTimeSpent" value="25160000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -351,8 +369,8 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2265625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Errors in solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298193" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298193" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="UnitTesting" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -375,7 +393,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -396,23 +414,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../Form1.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../Compiler/Scanning/TokenCategory.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../Compiler/Scanning/Syntax.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -458,54 +460,63 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../Compiler/OperationTypeDefinition.cs">
+    <entry file="file://$PROJECT_DIR$/../../Form1.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        <state relative-caret-position="405">
+          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
           <folding>
-            <marker date="1481608633000" expanded="true" signature="55:1113" ph="{...}" />
-            <marker date="1481608633000" expanded="true" signature="97:1111" ph="{...}" />
+            <marker date="1481607921000" expanded="true" signature="6:259" ph="..." />
+            <marker date="1481607921000" expanded="true" signature="292:616" ph="{...}" />
+            <marker date="1481607921000" expanded="true" signature="332:614" ph="{...}" />
+            <marker date="1481607921000" expanded="true" signature="361:416" ph="{...}" />
+            <marker date="1481607921000" expanded="true" signature="483:608" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/Scanning/Syntax.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="48" selection-start-line="29" selection-start-column="27" selection-end-line="29" selection-end-column="48" />
+          <folding>
+            <marker date="1476493421000" expanded="true" signature="6:115" ph="..." />
+            <marker date="1476493421000" expanded="true" signature="166:1006" ph="{...}" />
+            <marker date="1476493421000" expanded="true" signature="199:1004" ph="{...}" />
+            <marker date="1476493421000" expanded="true" signature="249:421" ph="{...}" />
+            <marker date="1476493421000" expanded="true" signature="466:541" ph="{...}" />
+            <marker date="1476493421000" expanded="true" signature="592:658" ph="{...}" />
+            <marker date="1476493421000" expanded="true" signature="703:835" ph="{...}" />
+            <marker date="1476493421000" expanded="true" signature="905:998" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../Compiler/DataTypeDefinition.cs">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
+          <folding>
+            <marker date="1481778730000" expanded="true" signature="41:288" ph="{...}" />
+            <marker date="1481778730000" expanded="true" signature="78:286" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/VariableType.cs">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
-          <caret line="9" column="37" selection-start-line="7" selection-start-column="8" selection-end-line="9" selection-end-column="37" />
+          <caret line="9" column="1" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
           <folding>
-            <marker date="1481689773000" expanded="true" signature="41:268" ph="{...}" />
-            <marker date="1481689773000" expanded="true" signature="78:266" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../Compiler/FlagTypeDefinition.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="5" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
-          <folding>
-            <marker date="1481690609000" expanded="true" signature="40:176" ph="{...}" />
-            <marker date="1481690609000" expanded="true" signature="77:174" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../Compiler/SymbolStructure/SymbolVariable.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="64" selection-start-line="6" selection-start-column="64" selection-end-line="6" selection-end-column="64" />
-          <folding>
-            <marker date="1481690609000" expanded="true" signature="56:288" ph="{...}" />
-            <marker date="1481690609000" expanded="true" signature="102:286" ph="{...}" />
+            <marker date="1481689552000" expanded="true" signature="40:385" ph="{...}" />
+            <marker date="1481689552000" expanded="true" signature="73:383" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../Compiler/SymbolStructure/SymbolBase.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
+        <state relative-caret-position="105">
+          <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
           <folding>
             <marker date="1481690453000" expanded="true" signature="56:237" ph="{...}" />
             <marker date="1481690453000" expanded="true" signature="86:235" ph="{...}" />
@@ -513,65 +524,139 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/FlagTypeDefinition.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1481690609000" expanded="true" signature="40:176" ph="{...}" />
+            <marker date="1481690609000" expanded="true" signature="77:174" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/OperationTypeDefinition.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-264">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1481608633000" expanded="true" signature="55:1113" ph="{...}" />
+            <marker date="1481608633000" expanded="true" signature="97:1111" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/SymbolStructure/SymbolVariable.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="66" selection-start-line="6" selection-start-column="66" selection-end-line="6" selection-end-column="66" />
+          <folding>
+            <marker date="1481690609000" expanded="true" signature="56:288" ph="{...}" />
+            <marker date="1481690609000" expanded="true" signature="102:286" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../../Compiler/Token.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="51" selection-start-line="11" selection-start-column="51" selection-end-line="11" selection-end-column="51" />
+        <state relative-caret-position="225">
+          <caret line="15" column="96" selection-start-line="15" selection-start-column="91" selection-end-line="15" selection-end-column="96" />
           <folding>
-            <marker date="1481693214000" expanded="true" signature="6:162" ph="..." />
-            <marker date="1481693214000" expanded="true" signature="204:650" ph="{...}" />
-            <marker date="1481693214000" expanded="true" signature="229:648" ph="{...}" />
-            <marker date="1481693214000" expanded="true" signature="488:641" ph="{...}" />
+            <marker date="1481783721000" expanded="true" signature="6:162" ph="..." />
+            <marker date="1481783721000" expanded="true" signature="204:649" ph="{...}" />
+            <marker date="1481783721000" expanded="true" signature="229:647" ph="{...}" />
+            <marker date="1481783721000" expanded="true" signature="487:640" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../Compiler/TokenTypeDefinition.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="105" column="18" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="18" />
+        <state relative-caret-position="246">
+          <caret line="88" column="23" selection-start-line="88" selection-start-column="23" selection-end-line="88" selection-end-column="23" />
           <folding>
-            <marker date="1481694260000" expanded="true" signature="55:2348" ph="{...}" />
-            <marker date="1481694260000" expanded="true" signature="93:2346" ph="{...}" />
+            <marker date="1481780719000" expanded="true" signature="55:2429" ph="{...}" />
+            <marker date="1481780719000" expanded="true" signature="93:2427" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/StackPointer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1481689552000" expanded="true" signature="40:119" ph="{...}" />
+            <marker date="1481689552000" expanded="true" signature="73:117" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../Compiler/Scanning/Scanner.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="87" column="35" selection-start-line="87" selection-start-column="35" selection-end-line="87" selection-end-column="35" />
+        <state relative-caret-position="-1101">
+          <caret line="64" column="59" selection-start-line="64" selection-start-column="46" selection-end-line="64" selection-end-column="59" />
           <folding>
-            <marker date="1481694934000" expanded="true" signature="6:146" ph="..." />
-            <marker date="1481694934000" expanded="true" signature="197:30810" ph="{...}" />
-            <marker date="1481694934000" expanded="true" signature="318:30808" ph="{...}" />
-            <marker date="1481694934000" expanded="true" signature="679:852" ph="{...}" />
-            <marker date="1481694934000" expanded="true" signature="938:3820" ph="{...}" />
-            <marker date="1481694934000" expanded="true" signature="3883:4119" ph="{...}" />
-            <marker date="1481694934000" expanded="true" signature="4153:4378" ph="{...}" />
-            <marker date="1481694934000" expanded="true" signature="4411:4932" ph="{...}" />
-            <marker date="1481694934000" expanded="false" signature="4970:5284" ph="{...}" />
-            <marker date="1481694934000" expanded="false" signature="5334:17980" ph="{...}" />
-            <marker date="1481694934000" expanded="true" signature="18043:25582" ph="{...}" />
-            <marker date="1481694934000" expanded="false" signature="25643:30801" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="6:146" ph="..." />
+            <marker date="1481780761000" expanded="true" signature="197:31863" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="318:31861" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="699:872" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="958:3840" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="3903:4139" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="4173:4398" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="4431:4952" ph="{...}" />
+            <marker date="1481780761000" expanded="false" signature="4990:5304" ph="{...}" />
+            <marker date="1481780761000" expanded="false" signature="5354:18000" ph="{...}" />
+            <marker date="1481780761000" expanded="false" signature="18063:26076" ph="{...}" />
+            <marker date="1481780761000" expanded="true" signature="26127:26384" ph="{...}" />
+            <marker date="1481780761000" expanded="false" signature="26445:31854" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/TokenTypeValue.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="30" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
+          <folding>
+            <marker date="1481784650000" expanded="true" signature="307:428" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../Compiler/Parsing/Parser.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-594">
-          <caret line="137" column="33" selection-start-line="137" selection-start-column="33" selection-end-line="137" selection-end-column="33" />
+        <state relative-caret-position="287">
+          <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
           <folding>
-            <marker date="1481695706000" expanded="true" signature="294:5975" ph="{...}" />
-            <marker date="1481695706000" expanded="true" signature="321:5973" ph="{...}" />
-            <marker date="1481695706000" expanded="true" signature="929:1127" ph="data structures used" />
-            <marker date="1481695706000" expanded="true" signature="929:2443" ph="data_structures_used" />
-            <marker date="1481695706000" expanded="true" signature="2482:2661" ph="{...}" />
-            <marker date="1481695706000" expanded="true" signature="2696:2814" ph="{...}" />
-            <marker date="1481695706000" expanded="true" signature="2854:5562" ph="{...}" />
-            <marker date="1481695706000" expanded="true" signature="5613:5884" ph="{...}" />
-            <marker date="1481695706000" expanded="true" signature="5912:5959" ph="{...}" />
+            <marker date="1481790365000" expanded="true" signature="349:3938" ph="{...}" />
+            <marker date="1481790365000" expanded="true" signature="376:3936" ph="{...}" />
+            <marker date="1481790365000" expanded="true" signature="531:689" ph="{...}" />
+            <marker date="1481790365000" expanded="true" signature="724:858" ph="{...}" />
+            <marker date="1481790365000" expanded="true" signature="898:3743" ph="{...}" />
+            <marker date="1481790365000" expanded="true" signature="3774:3922" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Compiler/SemanticAnalysis/SemanticAnalyzer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="135" column="44" selection-start-line="135" selection-start-column="44" selection-end-line="135" selection-end-column="44" />
+          <folding>
+            <marker date="1481790084000" expanded="true" signature="6:205" ph="..." />
+            <marker date="1481790084000" expanded="true" signature="264:17668" ph="{...}" />
+            <marker date="1481790084000" expanded="true" signature="300:17666" ph="{...}" />
+            <marker date="1481790084000" expanded="true" signature="748:986" ph="{...}" />
+            <marker date="1481790084000" expanded="false" signature="1030:4205" ph="{...}" />
+            <marker date="1481790084000" expanded="true" signature="1529:1721" ph="{...}" />
+            <marker date="1481790084000" expanded="true" signature="6957:7480" ph="{...}" />
+            <marker date="1481790084000" expanded="false" signature="7590:13246" ph="{...}" />
+            <marker date="1481790084000" expanded="false" signature="13307:17120" ph="{...}" />
+            <marker date="1481790084000" expanded="true" signature="17008:17096" ph="/* printf(&quot;\nRun time error: Out of range Code\n&quot;); ... */" />
+            <marker date="1481790084000" expanded="true" signature="17158:17226" ph="{...}" />
+            <marker date="1481790084000" expanded="true" signature="17262:17438" ph="{...}" />
+            <marker date="1481790084000" expanded="true" signature="17479:17655" ph="{...}" />
           </folding>
         </state>
       </provider>

@@ -61,7 +61,7 @@ namespace CompilersFinalProject.Compiler
         TK_MINUS = 54,
         TK_ASDIV = 55,
         TK_SLASH = 56,
-        TK_COLOM = 57,
+        TK_COLON = 57,
         TK_SEMI = 58,
         TK_ASLSHIFT = 59,
         TK_LSHIFT = 60,
@@ -103,6 +103,9 @@ namespace CompilersFinalProject.Compiler
         TK_BOOL = 93,
         TK_BOOLLIT = 94,
 
-        TK_PROGRAM = 95
+        TK_PROGRAM = 95,
+        TK_MULTIPLE_DECLARATIONS = 96,
+        TK_END=97,
+        TK_BEGIN = 98
     }
 }
