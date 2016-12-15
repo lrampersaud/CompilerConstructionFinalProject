@@ -37,21 +37,75 @@ namespace CompilersFinalProject.Compiler.Parsing
 
         public void ParseExpressions()
         {
-            int ty, val;
-            char[] name;
-            
-            
             if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
             {
-                semanticAnalyzer.F();
-
-                if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL) //an assignment
+                if (semanticAnalyzer.SymbolTable.Any(p => p.Name == scanner.CurrentToken.Value))
                 {
+                    SymbolVariable symVar = (SymbolVariable)semanticAnalyzer.SymbolTable.FirstOrDefault(p => p.Name == scanner.CurrentToken.Value);
+                    scanner.Advance();
+                    if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL) //an assignment
+                    {
+                        //save whatever is at the top of the stack into this variable
+                        switch (symVar.DataTypeDefinition)
+                        {
+                            case DataTypeDefinition.TYPE_BOOL:
+                            case DataTypeDefinition.TYPE_CHAR:
+                                {
+                                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_store); //does a push of the value onto the stack
+                                    semanticAnalyzer.gen4(symVar.Address);
+                                    break;
+                                }
+                            case DataTypeDefinition.TYPE_INT:
+                                {
+                                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storei);
+                                    semanticAnalyzer.gen4(symVar.Address);
+                                    break;
+                                }
+                            case DataTypeDefinition.TYPE_FLOAT:
+                                {
+                                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storef);
+                                    semanticAnalyzer.gen4(symVar.Address);
+                                    break;
+                                }
+                        }
 
-                    semanticAnalyzer.E();
-                    scanner.Match(TokenTypeDefinition.TK_SEMI);
+                        semanticAnalyzer.E();
+                        scanner.Match(TokenTypeDefinition.TK_SEMI);
+                    }
+                    else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
+                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
+                    {
+                        //if it is not an assignment, then it is a comparison of some sort
+                        switch (scanner.CurrentToken.TokenTypeDefinition)
+                        {
+                            case TokenTypeDefinition.TK_GREATER:
+                            {
+                                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_gtr);
+                                    break;
+                            }
+                            case TokenTypeDefinition.TK_GTEQ:
+                                {
+                                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_geq);
+                                    break;
+                                }
+                            case TokenTypeDefinition.TK_LESS:
+                                {
+                                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_lss);
+                                    break;
+                                }
+                            case TokenTypeDefinition.TK_LTEQ:
+                                {
+                                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_leq);
+                                    break;
+                                }
+                        }
+                        scanner.Advance();
+                        semanticAnalyzer.E();
+                        scanner.Match(TokenTypeDefinition.TK_SEMI);
+                    }
                 }
-
 
                 //ty = procIDs(name, tf);
             }
@@ -68,6 +122,7 @@ namespace CompilersFinalProject.Compiler.Parsing
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_INTLIT)
             {
+                //if it is a literal, then add it to the stack and look for a comparison of some sort
                 ty = procLIT();
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_WHILE)

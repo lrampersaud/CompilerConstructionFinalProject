@@ -50,6 +50,14 @@ namespace CompilersFinalProject.Compiler
         op_popa = 44,
         op_pusha = 45,
         op_out = 46,
-        op_pushr = 47
+        op_pushr = 47,
+        op_pushf = 48,
+        op_popf =49,
+        op_fetchi= 50,
+        op_fetchf=51,
+        op_fetch=52, 
+        op_storei=53,
+        op_storef=54,
+        op_store=55
     }
 }

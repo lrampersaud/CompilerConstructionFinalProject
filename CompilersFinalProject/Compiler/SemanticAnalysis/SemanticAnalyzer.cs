@@ -63,45 +63,45 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                 scanner.Match(TokenTypeDefinition.TK_COLON);
 
                 int size = 0;
-                DataTypeDefinition currentDataType= DataTypeDefinition.TYPE_VOID;
-                
+                DataTypeDefinition currentDataType = DataTypeDefinition.TYPE_VOID;
+
                 switch (scanner.CurrentToken.TokenTypeDefinition)
                 {
                     case TokenTypeDefinition.TK_INT:
-                    {
-                        size = 4;
-                        currentDataType = DataTypeDefinition.TYPE_INT;
-                        scanner.Match(TokenTypeDefinition.TK_INT);
-                        break;
-                    }
+                        {
+                            size = 4;
+                            currentDataType = DataTypeDefinition.TYPE_INT;
+                            scanner.Match(TokenTypeDefinition.TK_INT);
+                            break;
+                        }
                     case TokenTypeDefinition.TK_FLOAT:
-                    {
-                        size = 8;
-                        currentDataType = DataTypeDefinition.TYPE_FLOAT;
-                        scanner.Match(TokenTypeDefinition.TK_FLOAT);
-                        break;
-                    }
+                        {
+                            size = 8;
+                            currentDataType = DataTypeDefinition.TYPE_FLOAT;
+                            scanner.Match(TokenTypeDefinition.TK_FLOAT);
+                            break;
+                        }
                     case TokenTypeDefinition.TK_CHAR:
-                    {
-                        size = 1;
-                        currentDataType = DataTypeDefinition.TYPE_CHAR;
-                        scanner.Match(TokenTypeDefinition.TK_CHAR);
-                        break;
-                    }
+                        {
+                            size = 1;
+                            currentDataType = DataTypeDefinition.TYPE_CHAR;
+                            scanner.Match(TokenTypeDefinition.TK_CHAR);
+                            break;
+                        }
                     case TokenTypeDefinition.TK_BOOL:
-                    {
-                        size = 1;
-                        currentDataType = DataTypeDefinition.TYPE_BOOL;
-                        scanner.Match(TokenTypeDefinition.TK_BOOL);
-                        break;
-                    }
+                        {
+                            size = 1;
+                            currentDataType = DataTypeDefinition.TYPE_BOOL;
+                            scanner.Match(TokenTypeDefinition.TK_BOOL);
+                            break;
+                        }
                     default:
-                    {
-                        scanner.LogErrorToken(scanner.CurrentToken);
-                        break;
-                    }
+                        {
+                            scanner.LogErrorToken(scanner.CurrentToken);
+                            break;
+                        }
                 }
-                
+
                 //compute addresses
                 foreach (SymbolVariable t in variableTokens)
                 {
@@ -111,7 +111,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     dp = dp + size;
                     SymbolTable.Add(t);
                 }
-                
+
                 scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
 
@@ -127,41 +127,66 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             switch (scanner.CurrentToken.TokenTypeDefinition)
             {
                 case TokenTypeDefinition.TK_ID:
-                {
-                    if (SymbolTable.Any(p => p.Name == scanner.CurrentToken.Value))
                     {
-                        SymbolVariable symVar = (SymbolVariable)SymbolTable.FirstOrDefault(p => p.Name == scanner.CurrentToken.Value);
-                        tokenFound = new TokenTypeValue(symVar.DataTypeDefinition, symVar.Address);
-                        tokenFound.isAddress = true;
-                        gen4(symVar.Address);
+                        if (SymbolTable.Any(p => p.Name == scanner.CurrentToken.Value))
+                        {
+                            SymbolVariable symVar = (SymbolVariable)SymbolTable.FirstOrDefault(p => p.Name == scanner.CurrentToken.Value);
+                            tokenFound = new TokenTypeValue(symVar.DataTypeDefinition, symVar.Address);
+                            tokenFound.isAddress = true;
+                            switch (symVar.DataTypeDefinition)
+                            {
+                                case DataTypeDefinition.TYPE_BOOL:
+                                case DataTypeDefinition.TYPE_CHAR:
+                                    {
+                                        GenerateOperation(OperationTypeDefinition.op_fetch); //does a push of the value onto the stack
+                                        gen4(symVar.Address);
+                                        break;
+                                    }
+                                case DataTypeDefinition.TYPE_INT:
+                                    {
+                                        GenerateOperation(OperationTypeDefinition.op_fetchi);
+                                        gen4(symVar.Address);
+                                        break;
+                                    }
+                                case DataTypeDefinition.TYPE_FLOAT:
+                                    {
+                                        GenerateOperation(OperationTypeDefinition.op_fetchf);
+                                        gen4(symVar.Address);
+                                        break;
+                                    }
+                            }
+                        }
+                        break;
                     }
-                    break;
-                }
                 case TokenTypeDefinition.TK_INTLIT:
-                {
-                    gen4(Convert.ToInt32(scanner.CurrentToken.Value));
-                    tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_INT, Convert.ToInt32(scanner.CurrentToken.Value));
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_pushi);
+                        gen4(Convert.ToInt32(scanner.CurrentToken.Value));
+                        tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_INT, Convert.ToInt32(scanner.CurrentToken.Value));
 
-                    break;
-                }
+                        break;
+                    }
                 case TokenTypeDefinition.TK_REALLIT:
-                {
-                    gen8(Convert.ToInt32(scanner.CurrentToken.Value));
-                    tokenFound =  new TokenTypeValue(DataTypeDefinition.TYPE_FLOAT, Convert.ToSingle(scanner.CurrentToken.Value));
-                    break;
-                }
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_pushf);
+                        gen8(Convert.ToInt32(scanner.CurrentToken.Value));
+                        tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_FLOAT, Convert.ToSingle(scanner.CurrentToken.Value));
+                        break;
+                    }
                 case TokenTypeDefinition.TK_BOOLLIT:
-                {
-                    gen1(Convert.ToBoolean(scanner.CurrentToken.Value) ? '1' : '0');
-                    tokenFound =  new TokenTypeValue(DataTypeDefinition.TYPE_BOOL, Convert.ToBoolean(scanner.CurrentToken.Value));
-                    break;
-                }
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_push);
+                        gen1(Convert.ToBoolean(scanner.CurrentToken.Value) ? '1' : '0');
+                        tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_BOOL, Convert.ToBoolean(scanner.CurrentToken.Value));
+                        break;
+                    }
                 case TokenTypeDefinition.TK_CHARLIT:
-                {
-                    gen1(scanner.CurrentToken.Value[0]);
-                    tokenFound =  new TokenTypeValue(DataTypeDefinition.TYPE_CHAR, scanner.CurrentToken.Value);
-                    break;
-                }
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_push);
+                        gen1(scanner.CurrentToken.Value[0]);
+                        tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_CHAR, scanner.CurrentToken.Value);
+                        break;
+                    }
             }
             scanner.Advance();
             return tokenFound;
@@ -344,98 +369,146 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
         }
 
 
-        void GenerateOperation(OperationTypeDefinition op)
+        public void GenerateOperation(OperationTypeDefinition op)
         {
-            if(ip<MAX_ARRAY)
+            if (ip < MAX_ARRAY)
             {
+                code[ip] = (char)op;
+
+
+                #region testing
                 switch (op)
                 {
                     case OperationTypeDefinition.op_end:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_end;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_end;
+                            break;
+                        }
                     case OperationTypeDefinition.op_add:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_add;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_add;
+                            break;
+                        }
                     case OperationTypeDefinition.op_sub:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_sub;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_sub;
+                            break;
+                        }
                     case OperationTypeDefinition.op_push:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_push;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_push;
+                            break;
+                        }
                     case OperationTypeDefinition.op_pushi:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_pushi;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_pushi;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_pushf:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_pushf;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_popf:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_popf;
+                            break;
+                        }
                     case OperationTypeDefinition.op_pop:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_pop;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_pop;
+                            break;
+                        }
                     case OperationTypeDefinition.op_popi:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_popi;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_popi;
+                            break;
+                        }
                     case OperationTypeDefinition.op_dup:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_dup;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_dup;
+                            break;
+                        }
                     case OperationTypeDefinition.op_exch:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_exch;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_exch;
+                            break;
+                        }
                     case OperationTypeDefinition.op_jmp:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_jmp;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_jmp;
+                            break;
+                        }
                     case OperationTypeDefinition.op_fjmp:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_fjmp;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_fjmp;
+                            break;
+                        }
                     case OperationTypeDefinition.op_tjmp:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_tjmp;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_tjmp;
+                            break;
+                        }
                     case OperationTypeDefinition.op_mul:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_mul;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_mul;
+                            break;
+                        }
                     case OperationTypeDefinition.op_popa:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_popa;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_popa;
+                            break;
+                        }
                     case OperationTypeDefinition.op_pusha:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_pusha;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_pusha;
+                            break;
+                        }
                     case OperationTypeDefinition.op_out:
-                    {
-                        code[ip] = (char)OperationTypeDefinition.op_out;
-                        break;
-                    }
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_out;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_fetchi:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_fetchi;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_fetchf:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_fetchf;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_fetch:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_fetch;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_storei:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_storei;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_storef:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_storef;
+                            break;
+                        }
+                    case OperationTypeDefinition.op_store:
+                        {
+                            code[ip] = (char)OperationTypeDefinition.op_store;
+                            break;
+                        }
                     default:
-                    {
-                        //printf("\nThis operation has not been emplemented yet. --> %d\n",op);
-                        break;
-                    }
+                        {
+
+                            //printf("\nThis operation has not been emplemented yet. --> %d\n",op);
+                            break;
+                        }
                 }
+                #endregion
+
+
                 ip++;
             }
             else
@@ -446,29 +519,29 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
         }
 
 
-        private void gen1(char val)
+        public void gen1(char val)
         {
             code[ip] = val;
-            ip +=1;
+            ip += 1;
         }
 
-        private void gen4(int val)
+        public void gen4(int val)
         {
             var bytes = BitConverter.GetBytes(val);
             foreach (var b in bytes)
             {
-                code[ip++] = (char) b;
+                code[ip++] = (char)b;
             }
         }
 
 
 
-        private void gen8(double val)
+        public void gen8(double val)
         {
             var bytes = BitConverter.GetBytes(val);
             foreach (var b in bytes)
             {
-                code[ip++] = (char) b;
+                code[ip++] = (char)b;
             }
         }
 
