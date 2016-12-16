@@ -79,7 +79,7 @@ namespace CompilersFinalProject.Compiler.Scanning
             }
             else if (Syntax.IsLetter(nextChar))
             {
-                var strConst = EatWhile(c => Syntax.IsLetter(c));
+                var strConst = nextChar + EatWhile(c => Syntax.IsLetter(c));
                 TokenTypeDefinition keywordIdentifier = KeyWordId(strConst);
 
                 if (keywordIdentifier != TokenTypeDefinition.TK_BOOLLIT)
@@ -105,7 +105,7 @@ namespace CompilersFinalProject.Compiler.Scanning
             string added = "";
             while (isCondition(LookAhead()))
             {
-                added = LookAhead().ToString();
+                added += LookAhead().ToString();
                 _currentCharacter++;
             }
 
@@ -134,8 +134,6 @@ namespace CompilersFinalProject.Compiler.Scanning
                     this._currentErrorCharacter = 0;
                 }
                 
-                this._currentCharacter++;
-                
                 return _source[_currentCharacter++];
             }
             else
@@ -147,7 +145,7 @@ namespace CompilersFinalProject.Compiler.Scanning
 
         private void EatWhitespace()
         {
-            while ((int)LookAhead() <= 32)
+            while (_source.Length > _currentCharacter && (int)LookAhead() <= 32)
             {
                 if (_source[_currentCharacter] == '\n')
                 {
@@ -155,6 +153,11 @@ namespace CompilersFinalProject.Compiler.Scanning
                     this._currentErrorCharacter = 0;
                 }
                 _currentCharacter++;
+            }
+
+            if (_source.Length <= _currentCharacter)
+            {
+                IsAtEnd = true;
             }
         }
 
@@ -334,7 +337,15 @@ namespace CompilersFinalProject.Compiler.Scanning
                     }
                 case ':':
                     {
-                        _sym_Token = TokenTypeDefinition.TK_COLON;
+                        _sym_char = LookAhead();
+                        if (_sym_char == '=')
+                        {
+                            _sym_char = NextChar();
+                            _sym_Token = TokenTypeDefinition.TK_EQUAL;
+                            _sym_Name[1] = _sym_char;
+                        }
+                        else
+                            _sym_Token = TokenTypeDefinition.TK_COLON;
                         break;
                     }
                 case ';':
@@ -489,6 +500,7 @@ namespace CompilersFinalProject.Compiler.Scanning
 
         public static TokenTypeDefinition KeyWordId(string c)
         {
+            
             switch (c[0])
             {
                 case 'a':
@@ -567,6 +579,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         }
                         if (c == "extern")
                         {
+                            return TokenTypeDefinition.TK_EXTERN;
+                        }
+                        if (c == "end")
+                        {
                             return TokenTypeDefinition.TK_END;
                         }
                         break;
@@ -595,6 +611,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                             return TokenTypeDefinition.TK_IF;
                         }
                         if (c == "int")
+                        {
+                            return TokenTypeDefinition.TK_INT;
+                        }
+                        if (c == "integer")
                         {
                             return TokenTypeDefinition.TK_INT;
                         }

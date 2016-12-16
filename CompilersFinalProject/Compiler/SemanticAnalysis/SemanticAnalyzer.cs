@@ -32,6 +32,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             code = new char[MAX_ARRAY];
             data = new char[MAX_ARRAY];
             stack = new StackPointer[MAX_ARRAY];
+            SymbolTable = new HashSet<SymbolBase>();
         }
 
 
@@ -58,6 +59,10 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     }
 
                     scanner.Match(TokenTypeDefinition.TK_ID);
+                    if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_COMMA)
+                    {
+                        scanner.Match(TokenTypeDefinition.TK_COMMA);
+                    }
                 }
 
                 scanner.Match(TokenTypeDefinition.TK_COLON);
@@ -114,7 +119,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
 
                 scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
-
+            scanner.Match(TokenTypeDefinition.TK_BEGIN);
         }
 
 
@@ -373,142 +378,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
         {
             if (ip < MAX_ARRAY)
             {
-                code[ip] = (char)op;
-
-
-                #region testing
-                switch (op)
-                {
-                    case OperationTypeDefinition.op_end:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_end;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_add:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_add;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_sub:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_sub;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_push:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_push;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_pushi:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_pushi;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_pushf:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_pushf;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_popf:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_popf;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_pop:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_pop;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_popi:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_popi;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_dup:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_dup;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_exch:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_exch;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_jmp:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_jmp;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_fjmp:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_fjmp;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_tjmp:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_tjmp;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_mul:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_mul;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_popa:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_popa;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_pusha:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_pusha;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_out:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_out;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_fetchi:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_fetchi;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_fetchf:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_fetchf;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_fetch:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_fetch;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_storei:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_storei;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_storef:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_storef;
-                            break;
-                        }
-                    case OperationTypeDefinition.op_store:
-                        {
-                            code[ip] = (char)OperationTypeDefinition.op_store;
-                            break;
-                        }
-                    default:
-                        {
-
-                            //printf("\nThis operation has not been emplemented yet. --> %d\n",op);
-                            break;
-                        }
-                }
-                #endregion
-
-
+                code[ip] = Convert.ToChar(Convert.ToByte((int)op));
                 ip++;
             }
             else

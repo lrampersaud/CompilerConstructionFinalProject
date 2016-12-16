@@ -22,6 +22,12 @@ namespace CompilersFinalProject
         {
             string codeToCompile = tbEditor.Text;
             Parser parser = new Parser(codeToCompile);
+            parser.Run();
+
+
+            txtcode.Text = parser.VMCode;
         }
+
+      
     }
 }
