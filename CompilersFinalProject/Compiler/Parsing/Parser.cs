@@ -80,6 +80,8 @@ namespace CompilersFinalProject.Compiler.Parsing
                      scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
                      scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
                     {
+                        scanner.Match(scanner.CurrentToken.TokenTypeDefinition);
+                        semanticAnalyzer.E();
                         //if it is not an assignment, then it is a comparison of some sort
                         switch (scanner.CurrentToken.TokenTypeDefinition)
                         {
@@ -104,9 +106,6 @@ namespace CompilersFinalProject.Compiler.Parsing
                                     break;
                                 }
                         }
-                        scanner.Advance();
-                        semanticAnalyzer.E();
-                        scanner.Match(TokenTypeDefinition.TK_SEMI);
                     }
                 }
 
