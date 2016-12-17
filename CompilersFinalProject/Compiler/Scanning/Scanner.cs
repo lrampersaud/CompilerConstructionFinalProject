@@ -654,6 +654,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         {
                             return TokenTypeDefinition.TK_REGISTER;
                         }
+                        if (c == "repeat")
+                        {
+                            return TokenTypeDefinition.TK_REPEAT;
+                        }
                         break;
                     }
                 case 's':
@@ -696,6 +700,14 @@ namespace CompilersFinalProject.Compiler.Scanning
                         }
                         break;
                     }
+                case 'u':
+                {
+                        if (c == "until")
+                        {
+                            return TokenTypeDefinition.TK_UNTIL;
+                        }
+                        break;
+                }
                 case 'v':
                     {
                         if (c == "void")

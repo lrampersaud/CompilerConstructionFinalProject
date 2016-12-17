@@ -58,6 +58,7 @@ namespace CompilersFinalProject.Compiler
         op_fetch=52, 
         op_storei=53,
         op_storef=54,
-        op_store=55
+        op_store=55,
+        op_jfalse=56
     }
 }

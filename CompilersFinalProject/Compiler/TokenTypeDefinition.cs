@@ -106,6 +106,8 @@ namespace CompilersFinalProject.Compiler
         TK_PROGRAM = 95,
         TK_MULTIPLE_DECLARATIONS = 96,
         TK_END=97,
-        TK_BEGIN = 98
+        TK_BEGIN = 98,
+        TK_REPEAT=99,
+        TK_UNTIL=100
     }
 }

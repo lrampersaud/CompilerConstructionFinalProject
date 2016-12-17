@@ -115,6 +115,37 @@ namespace CompilersFinalProject.Compiler.Parsing
             {
                 semanticAnalyzer.VariableDeclaration();
             }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_REPEAT)
+            {
+                scanner.Match(TokenTypeDefinition.TK_REPEAT);
+                int target = semanticAnalyzer.ip;
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_UNION)
+                {
+                    ParseExpressions();
+                }
+                scanner.Match(TokenTypeDefinition.TK_UNTIL);
+                semanticAnalyzer.Condition();
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
+                semanticAnalyzer.gen1((char)target);
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_WHILE)
+            {
+                int target = semanticAnalyzer.ip;
+                scanner.Match(TokenTypeDefinition.TK_WHILE);
+                semanticAnalyzer.Condition();
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
+                int hole = semanticAnalyzer.ip;
+                semanticAnalyzer.gen1((char)0);
+                scanner.Match(TokenTypeDefinition.TK_DO);
+                scanner.Match(TokenTypeDefinition.TK_BEGIN);
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                {
+                    ParseExpressions();
+                }
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
+                semanticAnalyzer.gen1((char)target);
+                semanticAnalyzer.gen_Address((char)semanticAnalyzer.ip, hole);
+            }
             //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
             //         scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
             //         scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
@@ -126,10 +157,6 @@ namespace CompilersFinalProject.Compiler.Parsing
             //{
             //    //if it is a literal, then add it to the stack and look for a comparison of some sort
             //    ty = procLIT();
-            //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_WHILE)
-            //{
-            //    ty = procWHILE();
             //}
             //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_DO)
             //{

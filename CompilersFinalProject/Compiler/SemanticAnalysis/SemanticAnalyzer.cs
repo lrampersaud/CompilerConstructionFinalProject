@@ -126,6 +126,31 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
 
 
         //ARITHMETIC HEADACHE
+
+        public TokenTypeValue M()
+        {
+            TokenTypeValue t1 = F();
+
+            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_NOTEQ ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
+            {
+                TokenTypeDefinition operation = scanner.CurrentToken.TokenTypeDefinition;
+                scanner.Match(operation);
+
+                TokenTypeValue t2 = F();
+
+                t1 = Generate(t1, t2, operation);
+
+            }
+
+            return t1;
+        }
+
+
         public TokenTypeValue F()
         {
             TokenTypeValue tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_VOID, null);
@@ -192,15 +217,22 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                         tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_CHAR, scanner.CurrentToken.Value);
                         break;
                     }
+                
             }
             scanner.Advance();
             return tokenFound;
         }
 
+        public void Condition()
+        {
+            TokenTypeValue t = E();
+            if(t.DataType != DataTypeDefinition.TYPE_BOOL)
+                scanner.LogErrorToken(new Token(TokenCategory.Symbol, TokenTypeDefinition.TK_REPEAT, ""));
+        }
 
         public TokenTypeValue T()
         {
-            TokenTypeValue t1 = F();
+            TokenTypeValue t1 = M();
 
             while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_SLASH ||
                    scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_STAR)
@@ -208,7 +240,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                 TokenTypeDefinition operation = scanner.CurrentToken.TokenTypeDefinition;
                 scanner.Match(operation);
 
-                TokenTypeValue t2 = F();
+                TokenTypeValue t2 = M();
 
                 t1 = Generate(t1, t2, operation);
 
@@ -240,6 +272,8 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
         public TokenTypeValue Generate(TokenTypeValue t1, TokenTypeValue t2, TokenTypeDefinition operation)
         {
             TokenTypeValue tokenFound = new TokenTypeValue(DataTypeDefinition.TYPE_VOID, null);
+
+            #region plus
             if (operation == TokenTypeDefinition.TK_PLUS)
             {
                 if (t1.DataType == t2.DataType)
@@ -271,7 +305,9 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     }
                 }
             }
+            #endregion
 
+            #region minus
             if (operation == TokenTypeDefinition.TK_MINUS)
             {
                 if (t1.DataType == t2.DataType)
@@ -303,8 +339,9 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     }
                 }
             }
+            #endregion
 
-
+            #region star_multiply
             if (operation == TokenTypeDefinition.TK_STAR)
             {
                 if (t1.DataType == t2.DataType)
@@ -336,7 +373,9 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     }
                 }
             }
+            #endregion
 
+            #region divide_slash
             if (operation == TokenTypeDefinition.TK_SLASH)
             {
                 if (t1.DataType == t2.DataType)
@@ -368,7 +407,70 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     }
                 }
             }
+            #endregion
 
+
+
+            #region relational operators
+            if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_NOTEQ ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
+                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
+            {
+                tokenFound.DataType = DataTypeDefinition.TYPE_BOOL;
+
+                if (t1.DataType != t2.DataType)
+                {
+                    if (t1.DataType == DataTypeDefinition.TYPE_FLOAT && t2.DataType == DataTypeDefinition.TYPE_INT)
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_fcon);
+                    }
+                    else if (t1.DataType == DataTypeDefinition.TYPE_INT && t2.DataType == DataTypeDefinition.TYPE_FLOAT)
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_exch);
+                        GenerateOperation(OperationTypeDefinition.op_fcon);
+                        GenerateOperation(OperationTypeDefinition.op_exch);
+                    }
+                }
+
+
+                switch (operation)
+                {
+                    case TokenTypeDefinition.TK_EQUAL:
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_eql);
+                        break;
+                    }
+                    case TokenTypeDefinition.TK_NOTEQ:
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_neq);
+                        break;
+                    }
+                    case TokenTypeDefinition.TK_GTEQ:
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_geq);
+                        break;
+                    }
+                    case TokenTypeDefinition.TK_GREATER:
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_gtr);
+                        break;
+                    }
+                    case TokenTypeDefinition.TK_LESS:
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_lss);
+                        break;
+                    }
+                    case TokenTypeDefinition.TK_LTEQ:
+                    {
+                        GenerateOperation(OperationTypeDefinition.op_leq);
+                        break;
+                    }
+                }
+            }
+            #endregion
 
             return tokenFound;
         }
@@ -413,6 +515,11 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             {
                 code[ip++] = (char)b;
             }
+        }
+
+        public void gen_Address(char val, int target)
+        {
+            code[target] = val;
         }
 
 
