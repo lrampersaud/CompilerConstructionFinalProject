@@ -50,7 +50,8 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     {
                         Address = 0,
                         Name = scanner.CurrentToken.Value,
-                        FlagTypeDefinition = FlagTypeDefinition.Register
+                        FlagTypeDefinition = FlagTypeDefinition.Register,
+                        ChildSymbolTable=new HashSet<SymbolBase>()
                     });
 
                     if (SymbolTable.Any(p => p.Name == scanner.CurrentToken.Value))

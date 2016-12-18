@@ -72,8 +72,6 @@ namespace CompilersFinalProject.Compiler.Parsing
                                     break;
                                 }
                         }
-
-
                         scanner.Match(TokenTypeDefinition.TK_SEMI);
                     }
                     else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
@@ -203,46 +201,67 @@ namespace CompilersFinalProject.Compiler.Parsing
                     semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
                 }
             }
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
-            //         scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
-            //         scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
-            //         scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
-            //{
-            //    ty = procRELATION();
-            //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_INTLIT)
-            //{
-            //    //if it is a literal, then add it to the stack and look for a comparison of some sort
-            //    ty = procLIT();
-            //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_DO)
-            //{
-            //    ty = procDO();
-            //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_FOR)
-            //{
-            //    ty = procFOR();
-            //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_IF)
-            //{
-            //    procIF();
-            //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ELSE)
-            //{
-            //    procELSE();
-            //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_SWITCH)
-            //{
-            //    procSWITCH();
-            //}
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_FOR)
+            {
+                scanner.Match(TokenTypeDefinition.TK_FOR);
+                
+                
+
+
+                scanner.Match(TokenTypeDefinition.TK_END);
+
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_CASE)
+            {
+                scanner.Match(TokenTypeDefinition.TK_CASE);
+
+                semanticAnalyzer.F();
+
+                scanner.Match(TokenTypeDefinition.TK_OF);
+
+                int prevaddress = -1;
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                {
+                    int address = semanticAnalyzer.ip;
+
+                    //fill the previous hole with my address
+                    if (prevaddress != -1)
+                    {
+                        semanticAnalyzer.gen_Address(address, prevaddress);
+                    }
+
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_dup);
+
+                    semanticAnalyzer.F();
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_eql);
+
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
+                    prevaddress = semanticAnalyzer.ip;
+                    semanticAnalyzer.gen4(0);
+
+                    scanner.Match(TokenTypeDefinition.TK_COLON);
+                    
+                    ParseExpressions();
+                }
+
+                //remove the expression value from the stack
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_pop);
+                if (prevaddress != -1)
+                {
+                    semanticAnalyzer.gen_Address(semanticAnalyzer.ip, prevaddress);
+                }
+
+
+                scanner.Match(TokenTypeDefinition.TK_END);
+
+            }
+            
+            
             //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_OUT)
             //{
             //    procOUT();
             //}
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_COMMA)
-            //{
-            //    ty = procRE_EXP(TRUE);
-            //}
+
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LBRACE)
             {
                 scanner.Match(TokenTypeDefinition.TK_LBRACE);

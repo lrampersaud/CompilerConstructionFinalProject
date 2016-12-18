@@ -702,6 +702,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         {
                             return TokenTypeDefinition.TK_THEN;
                         }
+                        if (c == "to")
+                        {
+                            return TokenTypeDefinition.TK_TO;
+                        }
                         break;
                     }
                 case 'u':
@@ -749,6 +753,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         if (c == "out")
                         {
                             return TokenTypeDefinition.TK_OUT;
+                        }
+                        if (c == "of")
+                        {
+                            return TokenTypeDefinition.TK_OF;
                         }
                         break;
                     }
