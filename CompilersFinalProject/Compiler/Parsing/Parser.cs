@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CompilersFinalProject.Compiler.Scanning;
@@ -108,8 +109,6 @@ namespace CompilersFinalProject.Compiler.Parsing
                         }
                     }
                 }
-
-                //ty = procIDs(name, tf);
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
             {
@@ -119,32 +118,90 @@ namespace CompilersFinalProject.Compiler.Parsing
             {
                 scanner.Match(TokenTypeDefinition.TK_REPEAT);
                 int target = semanticAnalyzer.ip;
-                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_UNION)
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_UNTIL)
                 {
                     ParseExpressions();
                 }
                 scanner.Match(TokenTypeDefinition.TK_UNTIL);
                 semanticAnalyzer.Condition();
                 semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
-                semanticAnalyzer.gen1((char)target);
+                semanticAnalyzer.gen4(target);
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_WHILE)
             {
                 int target = semanticAnalyzer.ip;
                 scanner.Match(TokenTypeDefinition.TK_WHILE);
                 semanticAnalyzer.Condition();
-                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
                 int hole = semanticAnalyzer.ip;
-                semanticAnalyzer.gen1((char)0);
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
+                
+                semanticAnalyzer.gen4(0);
                 scanner.Match(TokenTypeDefinition.TK_DO);
-                scanner.Match(TokenTypeDefinition.TK_BEGIN);
                 while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
                 {
                     ParseExpressions();
                 }
                 semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
-                semanticAnalyzer.gen1((char)target);
-                semanticAnalyzer.gen_Address((char)semanticAnalyzer.ip, hole);
+                semanticAnalyzer.gen4(target);
+                semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_IF)
+            {
+                scanner.Match(TokenTypeDefinition.TK_IF);
+                semanticAnalyzer.Condition();
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
+                int hole = semanticAnalyzer.ip;
+                semanticAnalyzer.gen4(0);
+
+                scanner.Match(TokenTypeDefinition.TK_THEN);
+                bool isMany = scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_BEGIN;
+
+                if (isMany)
+                {
+                    scanner.Match(TokenTypeDefinition.TK_BEGIN);
+                    while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                    {
+                        ParseExpressions();
+                    }
+                    scanner.Match(TokenTypeDefinition.TK_END);
+                }
+                else
+                {
+                    ParseExpressions();
+                }
+
+                if(scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ELSE)
+                {
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
+                    int save_ip = semanticAnalyzer.ip;
+                    semanticAnalyzer.gen4(0);
+
+                    semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
+
+
+                    scanner.Match(TokenTypeDefinition.TK_ELSE);
+                    
+                    isMany = scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_BEGIN;
+                    if (isMany)
+                    {
+                        scanner.Match(TokenTypeDefinition.TK_BEGIN);
+                        while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                        {
+                            ParseExpressions();
+                        }
+                        scanner.Match(TokenTypeDefinition.TK_END);
+                    }
+                    else
+                    {
+                        ParseExpressions();
+                    }
+
+                    semanticAnalyzer.gen_Address(semanticAnalyzer.ip, save_ip);
+                }
+                else
+                {
+                    semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
+                }
             }
             //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
             //         scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
@@ -554,6 +611,13 @@ namespace CompilersFinalProject.Compiler.Parsing
                     case (int)OperationTypeDefinition.op_storef:
                         {
                             strCode += "storef ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_jfalse:
+                        {
+                            strCode += "jfalse ";
                             strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
                             cp += 4;
                             break;

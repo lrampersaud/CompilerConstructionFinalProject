@@ -36,9 +36,10 @@
             // 
             // btnCompile
             // 
-            this.btnCompile.Location = new System.Drawing.Point(326, 538);
+            this.btnCompile.Location = new System.Drawing.Point(279, 699);
+            this.btnCompile.Margin = new System.Windows.Forms.Padding(4);
             this.btnCompile.Name = "btnCompile";
-            this.btnCompile.Size = new System.Drawing.Size(75, 23);
+            this.btnCompile.Size = new System.Drawing.Size(100, 28);
             this.btnCompile.TabIndex = 0;
             this.btnCompile.Text = "Compile";
             this.btnCompile.UseVisualStyleBackColor = true;
@@ -46,40 +47,45 @@
             // 
             // tbEditor
             // 
-            this.tbEditor.Location = new System.Drawing.Point(12, 36);
+            this.tbEditor.Location = new System.Drawing.Point(16, 44);
+            this.tbEditor.Margin = new System.Windows.Forms.Padding(4);
             this.tbEditor.Name = "tbEditor";
-            this.tbEditor.Size = new System.Drawing.Size(759, 487);
+            this.tbEditor.Size = new System.Drawing.Size(691, 598);
             this.tbEditor.TabIndex = 1;
-            this.tbEditor.Text = "program HelloWorld\nvar x, y: integer;\nbegin\nx:=5;\ny:=x+3;\n\nend.";
+            this.tbEditor.Text = "program HelloWorld\nvar x, y: integer;\nbegin\nx:=5;\n\nif x<8 then\nx:=5;\nelse\nx:=6\n\ne" +
+    "nd";
             // 
             // txtcode
             // 
-            this.txtcode.Location = new System.Drawing.Point(803, 64);
+            this.txtcode.Location = new System.Drawing.Point(761, 81);
+            this.txtcode.Margin = new System.Windows.Forms.Padding(4);
             this.txtcode.Name = "txtcode";
-            this.txtcode.Size = new System.Drawing.Size(306, 540);
+            this.txtcode.Size = new System.Drawing.Size(407, 664);
             this.txtcode.TabIndex = 2;
             this.txtcode.Text = "";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(803, 36);
+            this.label1.Location = new System.Drawing.Point(758, 44);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.Size = new System.Drawing.Size(41, 17);
             this.label1.TabIndex = 3;
             this.label1.Text = "Code";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1502, 616);
+            this.ClientSize = new System.Drawing.Size(1185, 764);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtcode);
             this.Controls.Add(this.tbEditor);
             this.Controls.Add(this.btnCompile);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "PASCAL Compiler";
             this.ResumeLayout(false);
             this.PerformLayout();
 

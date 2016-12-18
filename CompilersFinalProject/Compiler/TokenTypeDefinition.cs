@@ -108,6 +108,8 @@ namespace CompilersFinalProject.Compiler
         TK_END=97,
         TK_BEGIN = 98,
         TK_REPEAT=99,
-        TK_UNTIL=100
+        TK_UNTIL=100,
+        TK_DATATYPEMISMATCH=101,
+        TK_THEN=102
     }
 }

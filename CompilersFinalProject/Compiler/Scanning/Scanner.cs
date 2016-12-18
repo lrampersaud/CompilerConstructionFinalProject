@@ -698,6 +698,10 @@ namespace CompilersFinalProject.Compiler.Scanning
                         {
                             return TokenTypeDefinition.TK_BOOLLIT;
                         }
+                        if (c == "then")
+                        {
+                            return TokenTypeDefinition.TK_THEN;
+                        }
                         break;
                     }
                 case 'u':

@@ -412,12 +412,12 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
 
 
             #region relational operators
-            if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL ||
-                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_NOTEQ ||
-                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
-                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
-                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
-                   scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
+            if (operation == TokenTypeDefinition.TK_EQUAL ||
+                   operation == TokenTypeDefinition.TK_NOTEQ ||
+                   operation == TokenTypeDefinition.TK_GTEQ ||
+                   operation == TokenTypeDefinition.TK_GREATER ||
+                   operation == TokenTypeDefinition.TK_LESS ||
+                   operation == TokenTypeDefinition.TK_LTEQ)
             {
                 tokenFound.DataType = DataTypeDefinition.TYPE_BOOL;
 
@@ -433,8 +433,11 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                         GenerateOperation(OperationTypeDefinition.op_fcon);
                         GenerateOperation(OperationTypeDefinition.op_exch);
                     }
+                    else
+                    {
+                        scanner.LogErrorToken(new Token(TokenCategory.Identifier, TokenTypeDefinition.TK_DATATYPEMISMATCH, ""));
+                    }
                 }
-
 
                 switch (operation)
                 {
@@ -469,6 +472,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                         break;
                     }
                 }
+
             }
             #endregion
 
@@ -517,9 +521,14 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             }
         }
 
-        public void gen_Address(char val, int target)
+        public void gen_Address(int val, int target)
         {
-            code[target] = val;
+            var bytes = BitConverter.GetBytes(val);
+            foreach (var b in bytes)
+            {
+                code[target++] = (char)b;
+            }
+           
         }
 
 
