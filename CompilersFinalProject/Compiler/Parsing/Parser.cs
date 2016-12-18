@@ -204,11 +204,82 @@ namespace CompilersFinalProject.Compiler.Parsing
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_FOR)
             {
                 scanner.Match(TokenTypeDefinition.TK_FOR);
-                
-                
 
+                SymbolVariable element = (SymbolVariable)semanticAnalyzer.SymbolTable.FirstOrDefault(p=>p.Name == scanner.CurrentToken.Value);
+
+                scanner.Match(TokenTypeDefinition.TK_ID);
+                scanner.Match(TokenTypeDefinition.TK_EQUAL);
+                semanticAnalyzer.F();
+
+                if(element != null && element.DataTypeDefinition== DataTypeDefinition.TYPE_INT)
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storei);
+                else if (element != null && element.DataTypeDefinition == DataTypeDefinition.TYPE_FLOAT)
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storef);
+                if (element != null) semanticAnalyzer.gen4(element.Address);
+
+                scanner.Match(TokenTypeDefinition.TK_TO);
+                semanticAnalyzer.F();
+
+
+                scanner.Match(TokenTypeDefinition.TK_DO);
+                scanner.Match(TokenTypeDefinition.TK_BEGIN);
+
+                int beginFor = semanticAnalyzer.ip;
+
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_dup);
+
+                if (element != null && element.DataTypeDefinition == DataTypeDefinition.TYPE_INT)
+                {
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_fetchi);
+                    semanticAnalyzer.gen4(element.Address);
+                }
+                else if (element != null && element.DataTypeDefinition == DataTypeDefinition.TYPE_FLOAT)
+                {
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_fetchf);
+                    semanticAnalyzer.gen4(element.Address);
+                }
+
+
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_leq);
+
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
+                int save_ip = semanticAnalyzer.ip;
+                semanticAnalyzer.gen4(0);
+
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                {
+                    ParseExpressions();
+                }
+
+                //increment counter
+                if (element != null && element.DataTypeDefinition == DataTypeDefinition.TYPE_INT)
+                {
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_fetchi);
+                    semanticAnalyzer.gen4(element.Address);
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_pushi);
+                    semanticAnalyzer.gen4(1);
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_add);
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storei);
+                    semanticAnalyzer.gen4(element.Address);
+                }
+                else if (element != null && element.DataTypeDefinition == DataTypeDefinition.TYPE_FLOAT)
+                {
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_fetchf);
+                    semanticAnalyzer.gen4(element.Address);
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_pushf);
+                    semanticAnalyzer.gen8(1);
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_add);
+                    semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storef);
+                    semanticAnalyzer.gen4(element.Address);
+                }
+
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
+                semanticAnalyzer.gen4(beginFor);
 
                 scanner.Match(TokenTypeDefinition.TK_END);
+
+                semanticAnalyzer.gen_Address(semanticAnalyzer.ip, save_ip);
+                
 
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_CASE)

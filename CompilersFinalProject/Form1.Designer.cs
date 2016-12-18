@@ -52,8 +52,8 @@
             this.tbEditor.Name = "tbEditor";
             this.tbEditor.Size = new System.Drawing.Size(691, 598);
             this.tbEditor.TabIndex = 1;
-            this.tbEditor.Text = "program HelloWorld\nvar x, y: integer;\nbegin\nx:=5;\n\ncase x of\n5: x:=5;\n6: x:=6;\n7:" +
-    " x:=7;\nend\n\nend";
+            this.tbEditor.Text = "program HelloWorld\nvar x, y: integer;\nbegin\nx:=5;\n\nfor y:=0 to 5 do\nbegin\nx:=5;\ne" +
+    "nd\n\nend";
             // 
             // txtcode
             // 
