@@ -123,8 +123,12 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             scanner.Match(TokenTypeDefinition.TK_BEGIN);
         }
 
-        public void VariableDeclarationProcedure()
+        /// <summary>
+        /// Store variables in data segment and initialize
+        /// </summary>
+        public void VariableDeclarationProcedure(SymbolProcedure symbolProcedure)
         {
+            symbolProcedure.Arguments = new List<ProcedureArgument>();
             while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
             {
                 scanner.Match(TokenTypeDefinition.TK_A_VAR);
@@ -195,7 +199,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                         }
                 }
 
-                //compute addresses
+                //compute addresses amd imitialize from stack
                 foreach (SymbolVariable t in variableTokens)
                 {
                     t.Size = size;
@@ -203,10 +207,34 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     t.DataTypeDefinition = currentDataType;
                     dp = dp + size;
                     SymbolTable.Add(t);
+
+                    switch (size)
+                    {
+                        case 1:
+                            GenerateOperation(OperationTypeDefinition.op_store);
+                            gen4(t.Address);
+                            break;
+                        case 4:
+                            GenerateOperation(OperationTypeDefinition.op_storei);
+                            gen4(t.Address);
+                            break;
+                        case 8:
+                            GenerateOperation(OperationTypeDefinition.op_storef);
+                            gen4(t.Address);
+                            break;
+                    }
+
+                    symbolProcedure.Arguments.Add(new ProcedureArgument
+                    {
+                        DataType = currentDataType,
+                        Name = t.Name
+                    });
+
                 }
 
-                scanner.Match(TokenTypeDefinition.TK_COMMA);
+                scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
+
         }
 
 
@@ -245,32 +273,88 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             {
                 case TokenTypeDefinition.TK_ID:
                     {
-                        if (SymbolTable.Any(p => p.Name == scanner.CurrentToken.Value))
+                        SymbolBase searchedSymVar = SymbolTable.FirstOrDefault(p => p.Name == scanner.CurrentToken.Value);
+                        if (searchedSymVar != null)
                         {
-                            SymbolVariable symVar = (SymbolVariable)SymbolTable.FirstOrDefault(p => p.Name == scanner.CurrentToken.Value);
-                            tokenFound = new TokenTypeValue(symVar.DataTypeDefinition, symVar.Address);
-                            tokenFound.isAddress = true;
-                            switch (symVar.DataTypeDefinition)
+                            //get the type of variable
+                            if (searchedSymVar.GetType() == typeof(SymbolVariable))
                             {
-                                case DataTypeDefinition.TYPE_BOOL:
-                                case DataTypeDefinition.TYPE_CHAR:
+                                SymbolVariable symVar = (SymbolVariable) searchedSymVar;
+                                tokenFound = new TokenTypeValue(symVar.DataTypeDefinition, symVar.Address);
+                                tokenFound.isAddress = true;
+                                switch (symVar.DataTypeDefinition)
+                                {
+                                    case DataTypeDefinition.TYPE_BOOL:
+                                    case DataTypeDefinition.TYPE_CHAR:
                                     {
                                         GenerateOperation(OperationTypeDefinition.op_fetch); //does a push of the value onto the stack
                                         gen4(symVar.Address);
                                         break;
                                     }
-                                case DataTypeDefinition.TYPE_INT:
+                                    case DataTypeDefinition.TYPE_INT:
                                     {
                                         GenerateOperation(OperationTypeDefinition.op_fetchi);
                                         gen4(symVar.Address);
                                         break;
                                     }
-                                case DataTypeDefinition.TYPE_FLOAT:
+                                    case DataTypeDefinition.TYPE_FLOAT:
                                     {
                                         GenerateOperation(OperationTypeDefinition.op_fetchf);
                                         gen4(symVar.Address);
                                         break;
                                     }
+                                }
+                            }
+                            else if (searchedSymVar.GetType() == typeof(SymbolProcedure))
+                            {
+                                //store where to return to in the stack before the parameters
+                                GenerateOperation(OperationTypeDefinition.op_pushi);
+                                int hole = ip;
+                                gen4(0);
+
+                                int count = 0;
+                                SymbolProcedure symVar = (SymbolProcedure)searchedSymVar;
+                                scanner.Match(TokenTypeDefinition.TK_ID);
+                                scanner.Match(TokenTypeDefinition.TK_LBRACE);
+
+                                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_RBRACE)
+                                {
+                                    count++;
+                                    switch (scanner.CurrentToken.TokenTypeDefinition)
+                                    {
+                                        case TokenTypeDefinition.TK_BOOLLIT:
+                                        case TokenTypeDefinition.TK_CHARLIT:
+                                        {
+                                            GenerateOperation(OperationTypeDefinition.op_push); //does a push of the value onto the stack
+                                            gen1(scanner.CurrentToken.Value[0]);
+                                            break;
+                                        }
+                                        case TokenTypeDefinition.TK_INTLIT:
+                                        {
+                                            GenerateOperation(OperationTypeDefinition.op_pushi);
+                                            gen4(Convert.ToInt32(scanner.CurrentToken.Value));
+                                            break;
+                                        }
+                                        case TokenTypeDefinition.TK_REALLIT:
+                                        {
+                                            GenerateOperation(OperationTypeDefinition.op_pushf);
+                                            gen8(Convert.ToSingle(scanner.CurrentToken.Value));
+                                            break;
+                                        }
+                                    }
+                                    scanner.Match(scanner.CurrentToken.TokenTypeDefinition);
+                                    if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_COMMA)
+                                        scanner.Match(scanner.CurrentToken.TokenTypeDefinition);
+
+                                }
+                                gen_Address(ip, hole); //push where to return to the bottom of the parameters
+                                scanner.Match(TokenTypeDefinition.TK_SEMI);
+
+                                if (count != symVar.Arguments.Count)
+                                {
+                                    scanner.LogErrorToken(new Token(TokenCategory.Literal, TokenTypeDefinition.TK_INVALID_NUMBER_OF_ARGUMENTS, ""));
+                                }
+
                             }
                         }
                         break;

@@ -17,6 +17,7 @@ namespace CompilersFinalProject.Compiler.Parsing
         public Scanner scanner { get; set; }
         public SemanticAnalyzer semanticAnalyzer { get; set; }
         public string VMCode { get; set; }
+        public string Errors { get; set; }
 
 
 
@@ -33,7 +34,7 @@ namespace CompilersFinalProject.Compiler.Parsing
         {
             scanner.Match(TokenTypeDefinition.TK_PROGRAM);
             scanner.Match(TokenTypeDefinition.TK_ID);
-
+            scanner.Match(TokenTypeDefinition.TK_SEMI);
         }
 
         public void ParseExpressions()
@@ -48,6 +49,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                     if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL) //an assignment
                     {
                         scanner.Match(TokenTypeDefinition.TK_EQUAL);
+
                         semanticAnalyzer.E();
                         //save whatever is at the top of the stack into this variable
                         switch (symVar.DataTypeDefinition)
@@ -348,14 +350,16 @@ namespace CompilersFinalProject.Compiler.Parsing
                     previousSymbolTable.UnionWith(semanticAnalyzer.SymbolTable.ToList());
 
                     scanner.Match(TokenTypeDefinition.TK_LBRACK);
-                    semanticAnalyzer.VariableDeclarationProcedure();
+
+                    semanticAnalyzer.VariableDeclarationProcedure(symbolProc);
+                    
                     scanner.Match(TokenTypeDefinition.TK_RBRACK);
                     scanner.Match(TokenTypeDefinition.TK_SEMI);
 
                     if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
                     {
                         scanner.Match(TokenTypeDefinition.TK_A_VAR);
-                        semanticAnalyzer.VariableDeclarationProcedure();
+                        semanticAnalyzer.VariableDeclaration();
                     }
 
                     scanner.Match(TokenTypeDefinition.TK_BEGIN);
@@ -366,13 +370,11 @@ namespace CompilersFinalProject.Compiler.Parsing
                     }
                 }
 
-                //jump back to who called me
+                //jump back to who called me: the top of the stack should be the address who called me
+               semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmps); //pop the stack and jump to the address
+
 
                 semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
-
-
-
-
             }
 
 
@@ -384,6 +386,10 @@ namespace CompilersFinalProject.Compiler.Parsing
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LBRACE)
             {
                 scanner.Match(TokenTypeDefinition.TK_LBRACE);
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_END)
+            {
+                scanner.Match(TokenTypeDefinition.TK_END);
             }
             else
             {
@@ -407,6 +413,11 @@ namespace CompilersFinalProject.Compiler.Parsing
 
 
             VMCode = VirtualMachine();
+            foreach (var item in scanner.ErrorLog)
+            {
+                Errors += item;
+                Errors += "\n";
+            }
         }
 
 
@@ -663,6 +674,11 @@ namespace CompilersFinalProject.Compiler.Parsing
                             strCode += "jmp ";
                             strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
                             cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_jmps:
+                        {
+                            strCode += "jmp ";
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fjmp:

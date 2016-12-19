@@ -16,7 +16,7 @@ namespace CompilersFinalProject.Compiler.Scanning
         private int _currentLine;
         private int _currentCharacter;
         private int _currentErrorCharacter;
-        private List<string> ErrorLog { get; set; }
+        public List<string> ErrorLog { get; set; }
         public bool IsAtEnd { get; private set; }
 
         public Scanner(string source)
@@ -901,7 +901,12 @@ namespace CompilersFinalProject.Compiler.Scanning
                     ErrorLog.Add($"Multiple Declarations found on line {_currentLine} column {_currentErrorCharacter}");
                     break;
                 }
-                //// left here need to work on this.
+                case TokenTypeDefinition.TK_INVALID_NUMBER_OF_ARGUMENTS:
+                    {
+                        ErrorLog.Add($"Invalid number of arguments used to call procedure on line {_currentLine} column {_currentErrorCharacter}");
+                        break;
+                    }
+                    //// left here need to work on this.
             }
             ErrorLog.Add($"Error matching TOKEN: {_currentToken.Value} with ID: {_currentToken.TokenTypeDefinition}");
         }

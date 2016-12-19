@@ -10,6 +10,6 @@ namespace CompilersFinalProject.Compiler.SymbolStructure
     public class SymbolProcedure: SymbolBase
     {
         public bool Seen { get; set; }
-        private List<ProcedureArgument> Arguments { get; set; }
+        public List<ProcedureArgument> Arguments { get; set; }
     }
 }

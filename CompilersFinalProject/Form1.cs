@@ -26,6 +26,7 @@ namespace CompilersFinalProject
 
 
             txtcode.Text = parser.VMCode;
+            tbErrors.Text = parser.Errors;
         }
 
       

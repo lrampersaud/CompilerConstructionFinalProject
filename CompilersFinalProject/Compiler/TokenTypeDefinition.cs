@@ -113,6 +113,7 @@ namespace CompilersFinalProject.Compiler
         TK_THEN=102,
         TK_TO = 103,
         TK_OF = 104,
-        TK_PROCEDURE = 105
+        TK_PROCEDURE = 105,
+        TK_INVALID_NUMBER_OF_ARGUMENTS = 106
     }
 }
