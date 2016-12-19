@@ -123,6 +123,92 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             scanner.Match(TokenTypeDefinition.TK_BEGIN);
         }
 
+        public void VariableDeclarationProcedure()
+        {
+            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
+            {
+                scanner.Match(TokenTypeDefinition.TK_A_VAR);
+
+                //begin reading variable names
+                List<SymbolVariable> variableTokens = new List<SymbolVariable>();
+                while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
+                {
+                    variableTokens.Add(new SymbolVariable
+                    {
+                        Address = 0,
+                        Name = scanner.CurrentToken.Value,
+                        FlagTypeDefinition = FlagTypeDefinition.Register,
+                        ChildSymbolTable = new HashSet<SymbolBase>()
+                    });
+
+                    if (SymbolTable.Any(p => p.Name == scanner.CurrentToken.Value))
+                    {
+                        scanner.LogErrorToken(new Token(TokenCategory.Identifier, TokenTypeDefinition.TK_MULTIPLE_DECLARATIONS, ""));
+                    }
+
+                    scanner.Match(TokenTypeDefinition.TK_ID);
+                    if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_COMMA)
+                    {
+                        scanner.Match(TokenTypeDefinition.TK_COMMA);
+                    }
+                }
+
+                scanner.Match(TokenTypeDefinition.TK_COLON);
+
+                int size = 0;
+                DataTypeDefinition currentDataType = DataTypeDefinition.TYPE_VOID;
+
+                switch (scanner.CurrentToken.TokenTypeDefinition)
+                {
+                    case TokenTypeDefinition.TK_INT:
+                        {
+                            size = 4;
+                            currentDataType = DataTypeDefinition.TYPE_INT;
+                            scanner.Match(TokenTypeDefinition.TK_INT);
+                            break;
+                        }
+                    case TokenTypeDefinition.TK_FLOAT:
+                        {
+                            size = 8;
+                            currentDataType = DataTypeDefinition.TYPE_FLOAT;
+                            scanner.Match(TokenTypeDefinition.TK_FLOAT);
+                            break;
+                        }
+                    case TokenTypeDefinition.TK_CHAR:
+                        {
+                            size = 1;
+                            currentDataType = DataTypeDefinition.TYPE_CHAR;
+                            scanner.Match(TokenTypeDefinition.TK_CHAR);
+                            break;
+                        }
+                    case TokenTypeDefinition.TK_BOOL:
+                        {
+                            size = 1;
+                            currentDataType = DataTypeDefinition.TYPE_BOOL;
+                            scanner.Match(TokenTypeDefinition.TK_BOOL);
+                            break;
+                        }
+                    default:
+                        {
+                            scanner.LogErrorToken(scanner.CurrentToken);
+                            break;
+                        }
+                }
+
+                //compute addresses
+                foreach (SymbolVariable t in variableTokens)
+                {
+                    t.Size = size;
+                    t.Address = dp;
+                    t.DataTypeDefinition = currentDataType;
+                    dp = dp + size;
+                    SymbolTable.Add(t);
+                }
+
+                scanner.Match(TokenTypeDefinition.TK_COMMA);
+            }
+        }
+
 
 
 

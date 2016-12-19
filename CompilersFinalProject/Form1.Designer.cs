@@ -32,11 +32,13 @@
             this.tbEditor = new System.Windows.Forms.RichTextBox();
             this.txtcode = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnCompile
             // 
-            this.btnCompile.Location = new System.Drawing.Point(279, 699);
+            this.btnCompile.Location = new System.Drawing.Point(283, 547);
             this.btnCompile.Margin = new System.Windows.Forms.Padding(4);
             this.btnCompile.Name = "btnCompile";
             this.btnCompile.Size = new System.Drawing.Size(100, 28);
@@ -50,17 +52,17 @@
             this.tbEditor.Location = new System.Drawing.Point(16, 44);
             this.tbEditor.Margin = new System.Windows.Forms.Padding(4);
             this.tbEditor.Name = "tbEditor";
-            this.tbEditor.Size = new System.Drawing.Size(691, 598);
+            this.tbEditor.Size = new System.Drawing.Size(691, 484);
             this.tbEditor.TabIndex = 1;
-            this.tbEditor.Text = "program HelloWorld\nvar x, y: integer;\nbegin\nx:=5;\n\nfor y:=0 to 5 do\nbegin\nx:=5;\ne" +
-    "nd\n\nend";
+            this.tbEditor.Text = "program HelloWorld\nvar x, y: integer;\nbegin\n\nprocedure HelloWorld(v,c:integer)\n\ne" +
+    "nd";
             // 
             // txtcode
             // 
             this.txtcode.Location = new System.Drawing.Point(761, 81);
             this.txtcode.Margin = new System.Windows.Forms.Padding(4);
             this.txtcode.Name = "txtcode";
-            this.txtcode.Size = new System.Drawing.Size(407, 664);
+            this.txtcode.Size = new System.Drawing.Size(411, 504);
             this.txtcode.TabIndex = 2;
             this.txtcode.Text = "";
             // 
@@ -74,11 +76,31 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Code";
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(16, 592);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(1156, 160);
+            this.richTextBox1.TabIndex = 4;
+            this.richTextBox1.Text = "";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(13, 572);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(68, 17);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Error Log";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1185, 764);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtcode);
             this.Controls.Add(this.tbEditor);
@@ -97,6 +119,8 @@
         private System.Windows.Forms.RichTextBox tbEditor;
         private System.Windows.Forms.RichTextBox txtcode;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

@@ -112,6 +112,7 @@ namespace CompilersFinalProject.Compiler
         TK_DATATYPEMISMATCH=101,
         TK_THEN=102,
         TK_TO = 103,
-        TK_OF = 104
+        TK_OF = 104,
+        TK_PROCEDURE = 105
     }
 }

@@ -642,7 +642,11 @@ namespace CompilersFinalProject.Compiler.Scanning
                     {
                         return TokenTypeDefinition.TK_PROGRAM;
                     }
-                    break;
+                        if (c == "procedure")
+                        {
+                            return TokenTypeDefinition.TK_PROCEDURE;
+                        }
+                        break;
                 }
                 case 'r':
                     {

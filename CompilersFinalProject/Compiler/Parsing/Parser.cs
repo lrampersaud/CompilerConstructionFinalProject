@@ -326,8 +326,56 @@ namespace CompilersFinalProject.Compiler.Parsing
                 scanner.Match(TokenTypeDefinition.TK_END);
 
             }
-            
-            
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_PROCEDURE)
+            {
+                //add a jump to end here
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
+                int hole = semanticAnalyzer.ip;
+                semanticAnalyzer.gen4(0);
+
+                scanner.Match(TokenTypeDefinition.TK_PROCEDURE);
+                if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
+                {
+                    SymbolProcedure symbolProc = new SymbolProcedure();
+                    symbolProc.Seen = true;
+                    symbolProc.Name = scanner.CurrentToken.Value;
+                    symbolProc.Address = semanticAnalyzer.ip;
+                    symbolProc.ChildSymbolTable = new HashSet<SymbolBase>();
+
+                    semanticAnalyzer.SymbolTable.Add(symbolProc);
+
+                    HashSet<SymbolBase> previousSymbolTable = new HashSet<SymbolBase>();
+                    previousSymbolTable.UnionWith(semanticAnalyzer.SymbolTable.ToList());
+
+                    scanner.Match(TokenTypeDefinition.TK_LBRACK);
+                    semanticAnalyzer.VariableDeclarationProcedure();
+                    scanner.Match(TokenTypeDefinition.TK_RBRACK);
+                    scanner.Match(TokenTypeDefinition.TK_SEMI);
+
+                    if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
+                    {
+                        scanner.Match(TokenTypeDefinition.TK_A_VAR);
+                        semanticAnalyzer.VariableDeclarationProcedure();
+                    }
+
+                    scanner.Match(TokenTypeDefinition.TK_BEGIN);
+
+                    while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                    {
+                        ParseExpressions();
+                    }
+                }
+
+                //jump back to who called me
+
+                semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
+
+
+
+
+            }
+
+
             //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_OUT)
             //{
             //    procOUT();
