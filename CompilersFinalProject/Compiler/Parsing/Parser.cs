@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,6 +19,7 @@ namespace CompilersFinalProject.Compiler.Parsing
         public SemanticAnalyzer semanticAnalyzer { get; set; }
         public string VMCode { get; set; }
         public string Errors { get; set; }
+        public Stack<StackPointer> myStack { get; set; }
 
 
 
@@ -28,6 +30,7 @@ namespace CompilersFinalProject.Compiler.Parsing
 
             scanner.Advance();
             semanticAnalyzer = new SemanticAnalyzer(scanner);
+            myStack = new Stack<StackPointer>();
         }
 
         public void ParseHeader()
@@ -440,7 +443,7 @@ namespace CompilersFinalProject.Compiler.Parsing
 
 
 
-        public void Run()
+        public void Run(RichTextBox richTextBox)
         {
             ParseHeader();
 
@@ -450,16 +453,21 @@ namespace CompilersFinalProject.Compiler.Parsing
             }
 
 
-            VMCode = VirtualMachine();
+            VMCode = PrintCode();
             foreach (var item in scanner.ErrorLog)
             {
                 Errors += item;
                 Errors += "\n";
             }
+
+            if (scanner.ErrorLog.Count == 0)
+            {
+                VirtualMachine(richTextBox);
+            }
         }
 
 
-        public string VirtualMachine()
+        public string PrintCode()
         {
             string strCode = "";
 
@@ -784,6 +792,408 @@ namespace CompilersFinalProject.Compiler.Parsing
                             strCode += "pushi ";
                             strCode += semanticAnalyzer.code[cp];
                             cp ++;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_store:
+                        {
+                            strCode += "store ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_storei:
+                        {
+                            strCode += "storei ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_storef:
+                        {
+                            strCode += "storef ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_jfalse:
+                        {
+                            strCode += "jfalse ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_jtrue:
+                        {
+                            strCode += "jtrue ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+
+                }
+                strCode += "\n";
+            }
+            return strCode;
+        }
+
+
+
+        public string VirtualMachine(RichTextBox richTextBox)
+        {
+            int cp = 0; //code pointer to the code file
+            while (cp < semanticAnalyzer.ip)
+            {
+                int c = Convert.ToInt32(Convert.ToByte(semanticAnalyzer.code[cp]));
+                StackPointer stockP = new StackPointer();
+                cp++;
+                switch (c)
+                {
+                    case (int)OperationTypeDefinition.op_push:
+                    {
+                        stockP.i = semanticAnalyzer.code[cp];
+                        myStack.Push(stockP);
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_pushi:
+                    {
+                        stockP.i =
+                            BitConverter.ToInt32(
+                                (byte[]) semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte) p).ToArray(), 0);
+                            myStack.Push(stockP);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_pop:
+                    {
+                        myStack.Pop();
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_popi:
+                    {
+                        myStack.Pop();
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_add:
+                    {
+                        StackPointer a = myStack.Pop();
+                        StackPointer b = myStack.Pop();
+                        stockP.i = a.i + b.i;
+                            myStack.Push(stockP);
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_end:
+                        {
+                            
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_mul:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            stockP.i = a.i * b.i;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_div:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            stockP.i = a.i / b.i;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_and:
+                        {
+                            StackPointer a = myStack.Pop();
+                        StackPointer b = myStack.Pop();
+                        stockP.b = a.b && b.b;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_or:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            stockP.b = a.b || b.b;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_xor:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            stockP.b = a.b && b.b;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_shl:
+                        {
+                            strCode += "shl ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_shr:
+                        {
+                            strCode += "shr ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_not:
+                        {
+                            StackPointer a = myStack.Pop();
+                            stockP.b = !a.b;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_neg:
+                        {
+                            StackPointer a = myStack.Pop();
+                            stockP.b = !a.b;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fadd:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            stockP.f = a.f + b.f;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fend:
+                        {
+                            
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fmul:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            stockP.f = a.f * b.f;
+                            myStack.Push(stockP);
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fdiv:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            stockP.f = a.f / b.f;
+                            myStack.Push(stockP);
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fneg:
+                        {
+                            
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fnot:
+                        {
+                            
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fcon:
+                        {
+                            strCode += "fcon ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_icon:
+                        {
+                            strCode += "icon ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_exch:
+                        {
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+                            
+                            myStack.Push(b);
+                            myStack.Push(a);
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_eql:
+                        {
+                            strCode += "eql ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_neq:
+                        {
+                            strCode += "neq ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_lss:
+                        {
+                            strCode += "lss ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_gtr:
+                        {
+                            strCode += "gtr ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_leq:
+                        {
+                            strCode += "leq ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_geq:
+                        {
+                            strCode += "neq ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_feql:
+                        {
+                            strCode += "feql ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fneq:
+                        {
+                            strCode += "fneq ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_flss:
+                        {
+                            strCode += "flss ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fgtr:
+                        {
+                            strCode += "fgtr ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fleg:
+                        {
+                            strCode += "fleg ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fgeq:
+                        {
+                            strCode += "fgeq ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_pr:
+                        {
+                            strCode += "pr ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_stop:
+                        {
+                            strCode += "stop ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_dup:
+                        {
+                            strCode += "dup ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_jmp:
+                        {
+                            strCode += "jmp ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_jmps:
+                        {
+                            strCode += "jmp ";
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fjmp:
+                        {
+                            strCode += "fjmp ";
+                            strCode += BitConverter.ToSingle((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
+                            cp += 8;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_tjmp:
+                        {
+                            strCode += "tjmp ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_popa:
+                        {
+                            strCode += "popa ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_out:
+                        {
+                            strCode += "out ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_pushr:
+                        {
+                            strCode += "pushr ";
+                            strCode += semanticAnalyzer.code[cp];
+                            cp++;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_pushf:
+                        {
+                            strCode += "pushf ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
+                            cp += 8;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_popf:
+                        {
+                            strCode += "popf ";
+
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fetchi:
+                        {
+                            strCode += "fetchi ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fetchf:
+                        {
+                            strCode += "fetchf ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
+                            cp += 8;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_fetch:
+                        {
+                            strCode += "pushi ";
+                            strCode += semanticAnalyzer.code[cp];
+                            cp++;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_store:

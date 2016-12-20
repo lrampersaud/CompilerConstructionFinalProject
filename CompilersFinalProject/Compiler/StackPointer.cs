@@ -1,8 +1,9 @@
 ﻿namespace CompilersFinalProject.Compiler
 {
-    public struct StackPointer
+    public class StackPointer
     {
-        int i;
-        float f;
+        public int i { get; set; }
+        public float f { get; set; }
+        public bool b { get; set; }
     }
 }
