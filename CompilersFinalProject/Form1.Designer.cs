@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnCompile = new System.Windows.Forms.Button();
             this.tbEditor = new System.Windows.Forms.RichTextBox();
             this.txtcode = new System.Windows.Forms.RichTextBox();
@@ -52,7 +53,7 @@
             this.tbEditor.Name = "tbEditor";
             this.tbEditor.Size = new System.Drawing.Size(519, 394);
             this.tbEditor.TabIndex = 1;
-            this.tbEditor.Text = "program HelloWorld;\nvar x, y: integer;\nbegin\n\nif x<5 then\nx:=5;\n\n\n\nend";
+            this.tbEditor.Text = resources.GetString("tbEditor.Text");
             // 
             // txtcode
             // 
@@ -74,7 +75,7 @@
             // tbErrors
             // 
             this.tbErrors.Location = new System.Drawing.Point(12, 481);
-            this.tbErrors.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbErrors.Margin = new System.Windows.Forms.Padding(2);
             this.tbErrors.Name = "tbErrors";
             this.tbErrors.Size = new System.Drawing.Size(868, 131);
             this.tbErrors.TabIndex = 4;

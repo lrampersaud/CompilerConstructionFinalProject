@@ -41,74 +41,104 @@ namespace CompilersFinalProject.Compiler.Parsing
         {
             if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
             {
-                if (semanticAnalyzer.SymbolTable.Any(p => p.Name == scanner.CurrentToken.Value))
+                SymbolBase symBase = semanticAnalyzer.SymbolTable.FirstOrDefault(p => p.Name == scanner.CurrentToken.Value);
+                if (symBase != null)
                 {
-                    SymbolVariable symVar = (SymbolVariable)semanticAnalyzer.SymbolTable.FirstOrDefault(p => p.Name == scanner.CurrentToken.Value);
-
-                    scanner.Match(TokenTypeDefinition.TK_ID);
-                    if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL) //an assignment
+                    if (typeof(SymbolVariable) == symBase.GetType())
                     {
-                        scanner.Match(TokenTypeDefinition.TK_EQUAL);
+                        SymbolVariable symVar = (SymbolVariable) symBase;
 
-                        semanticAnalyzer.E();
-                        //save whatever is at the top of the stack into this variable
-                        switch (symVar.DataTypeDefinition)
+                        scanner.Match(TokenTypeDefinition.TK_ID);
+                        if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_EQUAL) //an assignment
                         {
-                            case DataTypeDefinition.TYPE_BOOL:
-                            case DataTypeDefinition.TYPE_CHAR:
+                            scanner.Match(TokenTypeDefinition.TK_EQUAL);
+
+                            semanticAnalyzer.E();
+                            //save whatever is at the top of the stack into this variable
+                            switch (symVar.DataTypeDefinition)
+                            {
+                                case DataTypeDefinition.TYPE_BOOL:
+                                case DataTypeDefinition.TYPE_CHAR:
                                 {
                                     semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_store); //does a push of the value onto the stack
                                     semanticAnalyzer.gen4(symVar.Address);
                                     break;
                                 }
-                            case DataTypeDefinition.TYPE_INT:
+                                case DataTypeDefinition.TYPE_INT:
                                 {
                                     semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storei);
                                     semanticAnalyzer.gen4(symVar.Address);
                                     break;
                                 }
-                            case DataTypeDefinition.TYPE_FLOAT:
+                                case DataTypeDefinition.TYPE_FLOAT:
                                 {
                                     semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_storef);
                                     semanticAnalyzer.gen4(symVar.Address);
                                     break;
                                 }
+                            }
+                            scanner.Match(TokenTypeDefinition.TK_SEMI);
                         }
-                        scanner.Match(TokenTypeDefinition.TK_SEMI);
-                    }
-                    else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
-                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
-                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
-                     scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
-                    {
-                        scanner.Match(scanner.CurrentToken.TokenTypeDefinition);
-                        semanticAnalyzer.E();
-                        //if it is not an assignment, then it is a comparison of some sort
-                        switch (scanner.CurrentToken.TokenTypeDefinition)
+                        else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GREATER ||
+                                 scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_GTEQ ||
+                                 scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LESS ||
+                                 scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LTEQ)
                         {
-                            case TokenTypeDefinition.TK_GREATER:
+                            scanner.Match(scanner.CurrentToken.TokenTypeDefinition);
+                            semanticAnalyzer.E();
+                            //if it is not an assignment, then it is a comparison of some sort
+                            switch (scanner.CurrentToken.TokenTypeDefinition)
+                            {
+                                case TokenTypeDefinition.TK_GREATER:
                                 {
                                     semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_gtr);
                                     break;
                                 }
-                            case TokenTypeDefinition.TK_GTEQ:
+                                case TokenTypeDefinition.TK_GTEQ:
                                 {
                                     semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_geq);
                                     break;
                                 }
-                            case TokenTypeDefinition.TK_LESS:
+                                case TokenTypeDefinition.TK_LESS:
                                 {
                                     semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_lss);
                                     break;
                                 }
-                            case TokenTypeDefinition.TK_LTEQ:
+                                case TokenTypeDefinition.TK_LTEQ:
                                 {
                                     semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_leq);
                                     break;
                                 }
+                            }
                         }
                     }
+                    else if (typeof(SymbolProcedure) == symBase.GetType())
+                    {
+                        SymbolProcedure symVar = (SymbolProcedure)symBase;
+
+                        scanner.Match(TokenTypeDefinition.TK_ID);
+                        scanner.Match(TokenTypeDefinition.TK_LPAREN);
+
+                        while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_RPAREN)
+                        {
+                            semanticAnalyzer.F();
+                            if(scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_COMMA)
+                                scanner.Match(TokenTypeDefinition.TK_COMMA);
+                        }
+                        scanner.Match(TokenTypeDefinition.TK_RPAREN);
+                        scanner.Match(TokenTypeDefinition.TK_SEMI);
+
+                        //push the return to position
+                        semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_pushi);
+                        semanticAnalyzer.gen4(semanticAnalyzer.ip);
+
+                        //jump to procedure
+                        semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
+                        semanticAnalyzer.gen4(symVar.Address);
+
+                    }
                 }
+                
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
             {
@@ -126,17 +156,19 @@ namespace CompilersFinalProject.Compiler.Parsing
                 semanticAnalyzer.Condition();
                 semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
                 semanticAnalyzer.gen4(target);
+                scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_WHILE)
             {
                 int target = semanticAnalyzer.ip;
                 scanner.Match(TokenTypeDefinition.TK_WHILE);
                 semanticAnalyzer.Condition();
-                int hole = semanticAnalyzer.ip;
-                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
                 
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jfalse);
+                int hole = semanticAnalyzer.ip;
                 semanticAnalyzer.gen4(0);
                 scanner.Match(TokenTypeDefinition.TK_DO);
+                scanner.Match(TokenTypeDefinition.TK_BEGIN);
                 while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
                 {
                     ParseExpressions();
@@ -144,6 +176,9 @@ namespace CompilersFinalProject.Compiler.Parsing
                 semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
                 semanticAnalyzer.gen4(target);
                 semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
+
+                scanner.Match(TokenTypeDefinition.TK_END);
+                scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_IF)
             {
@@ -279,6 +314,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                 semanticAnalyzer.gen4(beginFor);
 
                 scanner.Match(TokenTypeDefinition.TK_END);
+                scanner.Match(TokenTypeDefinition.TK_SEMI);
 
                 semanticAnalyzer.gen_Address(semanticAnalyzer.ip, save_ip);
                 
@@ -312,6 +348,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                     prevaddress = semanticAnalyzer.ip;
                     semanticAnalyzer.gen4(0);
 
+                    
                     scanner.Match(TokenTypeDefinition.TK_COLON);
                     
                     ParseExpressions();
@@ -326,15 +363,12 @@ namespace CompilersFinalProject.Compiler.Parsing
 
 
                 scanner.Match(TokenTypeDefinition.TK_END);
+                scanner.Match(TokenTypeDefinition.TK_SEMI);
 
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_PROCEDURE)
             {
-                //add a jump to end here
-                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
-                int hole = semanticAnalyzer.ip;
-                semanticAnalyzer.gen4(0);
-
+               
                 scanner.Match(TokenTypeDefinition.TK_PROCEDURE);
                 if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
                 {
@@ -349,11 +383,12 @@ namespace CompilersFinalProject.Compiler.Parsing
                     HashSet<SymbolBase> previousSymbolTable = new HashSet<SymbolBase>();
                     previousSymbolTable.UnionWith(semanticAnalyzer.SymbolTable.ToList());
 
-                    scanner.Match(TokenTypeDefinition.TK_LBRACK);
+                    scanner.Match(TokenTypeDefinition.TK_ID);
+                    scanner.Match(TokenTypeDefinition.TK_LPAREN);
 
                     semanticAnalyzer.VariableDeclarationProcedure(symbolProc);
                     
-                    scanner.Match(TokenTypeDefinition.TK_RBRACK);
+                    scanner.Match(TokenTypeDefinition.TK_RPAREN);
                     scanner.Match(TokenTypeDefinition.TK_SEMI);
 
                     if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
@@ -368,13 +403,16 @@ namespace CompilersFinalProject.Compiler.Parsing
                     {
                         ParseExpressions();
                     }
+                    scanner.Match(TokenTypeDefinition.TK_END);
+                    scanner.Match(TokenTypeDefinition.TK_SEMI);
                 }
 
                 //jump back to who called me: the top of the stack should be the address who called me
                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmps); //pop the stack and jump to the address
 
+                if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_BEGIN)
+                    scanner.Match(TokenTypeDefinition.TK_BEGIN);
 
-                semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
             }
 
 
@@ -772,6 +810,13 @@ namespace CompilersFinalProject.Compiler.Parsing
                     case (int)OperationTypeDefinition.op_jfalse:
                         {
                             strCode += "jfalse ";
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            break;
+                        }
+                    case (int)OperationTypeDefinition.op_jtrue:
+                        {
+                            strCode += "jtrue ";
                             strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
                             cp += 4;
                             break;

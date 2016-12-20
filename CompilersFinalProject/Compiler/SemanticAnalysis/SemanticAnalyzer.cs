@@ -120,7 +120,8 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
 
                 scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
-            scanner.Match(TokenTypeDefinition.TK_BEGIN);
+            if(scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_BEGIN)
+                scanner.Match(TokenTypeDefinition.TK_BEGIN);
         }
 
         /// <summary>
@@ -129,10 +130,8 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
         public void VariableDeclarationProcedure(SymbolProcedure symbolProcedure)
         {
             symbolProcedure.Arguments = new List<ProcedureArgument>();
-            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
+            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
             {
-                scanner.Match(TokenTypeDefinition.TK_A_VAR);
-
                 //begin reading variable names
                 List<SymbolVariable> variableTokens = new List<SymbolVariable>();
                 while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
@@ -231,8 +230,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     });
 
                 }
-
-                scanner.Match(TokenTypeDefinition.TK_SEMI);
+                
             }
 
         }

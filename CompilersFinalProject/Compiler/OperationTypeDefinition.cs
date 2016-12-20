@@ -60,6 +60,7 @@ namespace CompilersFinalProject.Compiler
         op_storef=54,
         op_store=55,
         op_jfalse=56,
-        op_jmps = 57
+        op_jmps = 57,
+        op_jtrue = 58
     }
 }

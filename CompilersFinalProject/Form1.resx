@@ -117,4 +117,48 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="tbEditor.Text" xml:space="preserve">
+    <value>program HelloWorld;
+var x, y: integer;
+procedure findMin(a, b: integer); 
+begin
+   if a &lt; b then
+      a:= b;
+   else
+      b:= a;
+end;
+
+begin
+
+if x&lt;5 then
+    x:=5;
+else
+    x:=6;
+
+case x of
+5: y:=x;
+6: y:=6;
+7: y:=x+8;
+end;
+
+y:=1;
+while y&lt;4 do
+begin
+   y:=y+1;
+end;
+
+for y:=1 to 10 do
+begin
+    x:=x+1;
+end;
+
+repeat
+   x := x + 1;
+until x &gt;10;
+
+
+findMin(x,y);
+
+end</value>
+  </data>
 </root>
