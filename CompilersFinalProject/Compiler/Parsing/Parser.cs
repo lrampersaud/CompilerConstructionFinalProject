@@ -119,7 +119,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                         scanner.Match(TokenTypeDefinition.TK_ID);
                         scanner.Match(TokenTypeDefinition.TK_LPAREN);
 
-                        while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_RPAREN)
+                        while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_RPAREN && scanner.ErrorLog.Count == 0)
                         {
                             semanticAnalyzer.F();
                             if(scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_COMMA)
@@ -148,7 +148,7 @@ namespace CompilersFinalProject.Compiler.Parsing
             {
                 scanner.Match(TokenTypeDefinition.TK_REPEAT);
                 int target = semanticAnalyzer.ip;
-                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_UNTIL)
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_UNTIL && scanner.ErrorLog.Count == 0)
                 {
                     ParseExpressions();
                 }
@@ -169,7 +169,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                 semanticAnalyzer.gen4(0);
                 scanner.Match(TokenTypeDefinition.TK_DO);
                 scanner.Match(TokenTypeDefinition.TK_BEGIN);
-                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END && scanner.ErrorLog.Count == 0)
                 {
                     ParseExpressions();
                 }
@@ -194,7 +194,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                 if (isMany)
                 {
                     scanner.Match(TokenTypeDefinition.TK_BEGIN);
-                    while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                    while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END && scanner.ErrorLog.Count == 0)
                     {
                         ParseExpressions();
                     }
@@ -220,7 +220,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                     if (isMany)
                     {
                         scanner.Match(TokenTypeDefinition.TK_BEGIN);
-                        while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                        while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END && scanner.ErrorLog.Count == 0)
                         {
                             ParseExpressions();
                         }
@@ -283,7 +283,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                 int save_ip = semanticAnalyzer.ip;
                 semanticAnalyzer.gen4(0);
 
-                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END && scanner.ErrorLog.Count == 0)
                 {
                     ParseExpressions();
                 }
@@ -329,7 +329,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                 scanner.Match(TokenTypeDefinition.TK_OF);
 
                 int prevaddress = -1;
-                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END && scanner.ErrorLog.Count == 0)
                 {
                     int address = semanticAnalyzer.ip;
 
@@ -399,7 +399,7 @@ namespace CompilersFinalProject.Compiler.Parsing
 
                     scanner.Match(TokenTypeDefinition.TK_BEGIN);
 
-                    while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END)
+                    while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_END && scanner.ErrorLog.Count == 0)
                     {
                         ParseExpressions();
                     }
@@ -444,7 +444,7 @@ namespace CompilersFinalProject.Compiler.Parsing
         {
             ParseHeader();
 
-            while (!scanner._done)
+            while (!scanner._done && scanner.ErrorLog.Count == 0)
             {
                 ParseExpressions();
             }

@@ -38,13 +38,13 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
 
         public void VariableDeclaration()
         {
-            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
+            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR && scanner.ErrorLog.Count == 0)
             {
                 scanner.Match(TokenTypeDefinition.TK_A_VAR);
 
                 //begin reading variable names
                 List<SymbolVariable> variableTokens = new List<SymbolVariable>();
-                while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
+                while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID && scanner.ErrorLog.Count == 0)
                 {
                     variableTokens.Add(new SymbolVariable
                     {
@@ -130,11 +130,11 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
         public void VariableDeclarationProcedure(SymbolProcedure symbolProcedure)
         {
             symbolProcedure.Arguments = new List<ProcedureArgument>();
-            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
+            while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID && scanner.ErrorLog.Count == 0)
             {
                 //begin reading variable names
                 List<SymbolVariable> variableTokens = new List<SymbolVariable>();
-                while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID)
+                while (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_ID && scanner.ErrorLog.Count == 0)
                 {
                     variableTokens.Add(new SymbolVariable
                     {
@@ -315,7 +315,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                                 scanner.Match(TokenTypeDefinition.TK_ID);
                                 scanner.Match(TokenTypeDefinition.TK_LBRACE);
 
-                                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_RBRACE)
+                                while (scanner.CurrentToken.TokenTypeDefinition != TokenTypeDefinition.TK_RBRACE && scanner.ErrorLog.Count == 0)
                                 {
                                     count++;
                                     switch (scanner.CurrentToken.TokenTypeDefinition)
