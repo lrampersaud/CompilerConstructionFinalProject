@@ -120,8 +120,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
 
                 scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
-            if(scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_BEGIN)
-                scanner.Match(TokenTypeDefinition.TK_BEGIN);
+           
         }
 
         /// <summary>
@@ -700,6 +699,29 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
            
         }
 
+        public void save4(int val, int pos)
+        {
+            var bytes = BitConverter.GetBytes(val);
+            foreach (var b in bytes)
+            {
+                data[pos++] = (char)b;
+            }
+        }
+
+        public void save1(int val, int pos)
+        {
+            data[pos] = (char)val;
+            
+        }
+
+        public void save8(double val, int pos)
+        {
+            var bytes = BitConverter.GetBytes(val);
+            foreach (var b in bytes)
+            {
+                data[pos++] = (char)b;
+            }
+        }
 
 
 

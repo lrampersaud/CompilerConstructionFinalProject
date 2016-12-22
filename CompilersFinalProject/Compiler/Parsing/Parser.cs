@@ -20,7 +20,7 @@ namespace CompilersFinalProject.Compiler.Parsing
         public string VMCode { get; set; }
         public string Errors { get; set; }
         public Stack<StackPointer> myStack { get; set; }
-
+        public int CodeStart { get; set; }
 
 
         public Parser(string source)
@@ -31,6 +31,7 @@ namespace CompilersFinalProject.Compiler.Parsing
             scanner.Advance();
             semanticAnalyzer = new SemanticAnalyzer(scanner);
             myStack = new Stack<StackPointer>();
+            CodeStart = 0;
         }
 
         public void ParseHeader()
@@ -146,6 +147,11 @@ namespace CompilersFinalProject.Compiler.Parsing
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_A_VAR)
             {
                 semanticAnalyzer.VariableDeclaration();
+                if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_BEGIN)
+                {
+                    scanner.Match(TokenTypeDefinition.TK_BEGIN);
+                    CodeStart = semanticAnalyzer.ip;
+                }
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_REPEAT)
             {
@@ -414,19 +420,25 @@ namespace CompilersFinalProject.Compiler.Parsing
                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmps); //pop the stack and jump to the address
 
                 if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_BEGIN)
+                {
                     scanner.Match(TokenTypeDefinition.TK_BEGIN);
+                    CodeStart = semanticAnalyzer.ip;
+                }
 
             }
-
-
-            //else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_OUT)
-            //{
-            //    procOUT();
-            //}
-
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_LBRACE)
             {
                 scanner.Match(TokenTypeDefinition.TK_LBRACE);
+            }
+            else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_OUT)
+            {
+                scanner.Match(TokenTypeDefinition.TK_OUT);
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_out);
+
+                semanticAnalyzer.E();
+
+                if(scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_SEMI)
+                scanner.Match(TokenTypeDefinition.TK_SEMI);
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_END)
             {
@@ -438,11 +450,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                 scanner.Advance();
             }
         }
-
-
-
-
-
+        
         public void Run(RichTextBox richTextBox)
         {
             ParseHeader();
@@ -838,9 +846,10 @@ namespace CompilersFinalProject.Compiler.Parsing
 
 
 
-        public string VirtualMachine(RichTextBox richTextBox)
+        public void VirtualMachine(RichTextBox richTextBox)
         {
-            int cp = 0; //code pointer to the code file
+            richTextBox.Text = "";
+            int cp = CodeStart; //code pointer to the code file
             while (cp < semanticAnalyzer.ip)
             {
                 int c = Convert.ToInt32(Convert.ToByte(semanticAnalyzer.code[cp]));
@@ -936,13 +945,13 @@ namespace CompilersFinalProject.Compiler.Parsing
                         }
                     case (int)OperationTypeDefinition.op_shl:
                         {
-                            strCode += "shl ";
+                            
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_shr:
                         {
-                            strCode += "shr ";
+                       
 
                             break;
                         }
@@ -1008,13 +1017,25 @@ namespace CompilersFinalProject.Compiler.Parsing
                         }
                     case (int)OperationTypeDefinition.op_fcon:
                         {
-                            strCode += "fcon ";
+                            StackPointer a = myStack.Pop();
+                            myStack.Push(new StackPointer
+                            {
+                                i = (int) a.f,
+                                f = a.f,
+                                b = a.b
+                            });
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_icon:
                         {
-                            strCode += "icon ";
+                            StackPointer a = myStack.Pop();
+                            myStack.Push(new StackPointer
+                            {
+                                i = a.i,
+                                f = a.i,
+                                b = a.b
+                            });
 
                             break;
                         }
@@ -1029,221 +1050,510 @@ namespace CompilersFinalProject.Compiler.Parsing
                         }
                     case (int)OperationTypeDefinition.op_eql:
                         {
-                            strCode += "eql ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
 
+                            if (a.i == b.i)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
                             break;
                         }
                     case (int)OperationTypeDefinition.op_neq:
                         {
-                            strCode += "neq ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.i != b.i)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_lss:
                         {
-                            strCode += "lss ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.i < b.i)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_gtr:
                         {
-                            strCode += "gtr ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.i > b.i)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_leq:
                         {
-                            strCode += "leq ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.i <= b.i)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_geq:
                         {
-                            strCode += "neq ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.i >= b.i)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_feql:
                         {
-                            strCode += "feql ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if ( a.f == b.f)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fneq:
                         {
-                            strCode += "fneq ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.f != b.f)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_flss:
                         {
-                            strCode += "flss ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.f < b.f)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fgtr:
                         {
-                            strCode += "fgtr ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.f > b.f)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fleg:
                         {
-                            strCode += "fleg ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.f <= b.f)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fgeq:
                         {
-                            strCode += "fgeq ";
+                            StackPointer a = myStack.Pop();
+                            StackPointer b = myStack.Pop();
+
+                            if (a.f >= b.f)
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 1,
+                                    f = 1,
+                                    b = true
+                                });
+                            }
+                            else
+                            {
+                                myStack.Push(new StackPointer
+                                {
+                                    i = 0,
+                                    f = 0,
+                                    b = false
+                                });
+                            }
 
                             break;
                         }
-                    case (int)OperationTypeDefinition.op_pr:
-                        {
-                            strCode += "pr ";
-
-                            break;
-                        }
-                    case (int)OperationTypeDefinition.op_stop:
-                        {
-                            strCode += "stop ";
-
-                            break;
-                        }
+                   
                     case (int)OperationTypeDefinition.op_dup:
                         {
-                            strCode += "dup ";
+                            StackPointer a = myStack.Pop();
+
+                            myStack.Push(new StackPointer
+                            {
+                                i = a.i,
+                                f = a.f,
+                                b = a.b
+                            });
+                            myStack.Push(new StackPointer
+                            {
+                                i = a.i,
+                                f = a.f,
+                                b = a.b
+                            });
+
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_jmp:
                         {
-                            strCode += "jmp ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
                             cp += 4;
+                            if (a.i == 0)
+                            {
+                                cp = pos;
+                            }
                             break;
                         }
                     case (int)OperationTypeDefinition.op_jmps:
                         {
-                            strCode += "jmp ";
+                            
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fjmp:
                         {
-                            strCode += "fjmp ";
-                            strCode += BitConverter.ToSingle((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
-                            cp += 8;
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
+                            if (a.i == 0)
+                            {
+                                cp = pos;
+                            }
                             break;
                         }
                     case (int)OperationTypeDefinition.op_tjmp:
                         {
-                            strCode += "tjmp ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
                             cp += 4;
+                            if (a.i == 0)
+                            {
+                                cp = pos;
+                            }
                             break;
                         }
                     case (int)OperationTypeDefinition.op_popa:
                         {
-                            strCode += "popa ";
+                            StackPointer a = myStack.Pop();
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_out:
                         {
-                            strCode += "out ";
+                            StackPointer a = myStack.Pop();
+                            richTextBox.Text += a.i;
+                            richTextBox.Text += "\n";
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_pushr:
                         {
-                            strCode += "pushr ";
-                            strCode += semanticAnalyzer.code[cp];
+                            myStack.Push(new StackPointer
+                            {
+                                i = (int)semanticAnalyzer.code[cp],
+                                f = 0f,
+                                b = false
+                            });
+                            
                             cp++;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_pushf:
                         {
-                            strCode += "pushf ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
+                            myStack.Push(new StackPointer
+                            {
+                                i = 0,
+                                f = BitConverter.ToSingle((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0),
+                                b = false
+                            });
                             cp += 8;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_popf:
-                        {
-                            strCode += "popf ";
+                    {
+                        myStack.Pop();
 
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fetchi:
                         {
-                            strCode += "fetchi ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                           
+                            
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            myStack.Push(new StackPointer
+                            {
+                                f = 0,
+                                i = BitConverter.ToInt32((byte[])semanticAnalyzer.data.Skip(pos).Take(4).Select(p => (byte)p).ToArray(), 0),
+                                b = false
+                            });
+
+
                             cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fetchf:
                         {
-                            strCode += "fetchf ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            myStack.Push(new StackPointer
+                            {
+                                i = 0,
+                                f = BitConverter.ToInt32((byte[])semanticAnalyzer.data.Skip(pos).Take(8).Select(p => (byte)p).ToArray(), 0),
+                                b = false
+                            });
                             cp += 8;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fetch:
                         {
-                            strCode += "pushi ";
-                            strCode += semanticAnalyzer.code[cp];
+
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            myStack.Push(new StackPointer
+                            {
+                                i = 0,
+                                f = BitConverter.ToInt32((byte[])semanticAnalyzer.data.Skip(pos).Take(1).Select(p => (byte)p).ToArray(), 0),
+                                b = false
+                            });
                             cp++;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_store:
                         {
-                            strCode += "store ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            semanticAnalyzer.save1(a.i, pos);
                             cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_storei:
                         {
-                            strCode += "storei ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            semanticAnalyzer.save4(a.i, pos);
                             cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_storef:
                         {
-                            strCode += "storef ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            semanticAnalyzer.save8(a.f, pos);
                             cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_jfalse:
                         {
-                            strCode += "jfalse ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
                             cp += 4;
+                            if (a.i == 0)
+                            {
+                                cp = pos;
+                            }
+                            
                             break;
                         }
                     case (int)OperationTypeDefinition.op_jtrue:
                         {
-                            strCode += "jtrue ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            StackPointer a = myStack.Pop();
+                            int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
                             cp += 4;
+                            if (a.i == 1)
+                            {
+                                cp = pos;
+                            }
                             break;
                         }
 
                 }
-                strCode += "\n";
             }
-            return strCode;
         }
 
-
-
-
-
-
-
-
+        
     }
 }
