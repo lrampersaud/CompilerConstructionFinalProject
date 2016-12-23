@@ -82,7 +82,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                         }
                     case TokenTypeDefinition.TK_FLOAT:
                         {
-                            size = 8;
+                            size = 4;
                             currentDataType = DataTypeDefinition.TYPE_FLOAT;
                             scanner.Match(TokenTypeDefinition.TK_FLOAT);
                             break;
@@ -171,7 +171,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                         }
                     case TokenTypeDefinition.TK_FLOAT:
                         {
-                            size = 8;
+                            size = 4;
                             currentDataType = DataTypeDefinition.TYPE_FLOAT;
                             scanner.Match(TokenTypeDefinition.TK_FLOAT);
                             break;
@@ -206,17 +206,17 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
                     dp = dp + size;
                     SymbolTable.Add(t);
 
-                    switch (size)
+                    switch (currentDataType)
                     {
-                        case 1:
+                        case DataTypeDefinition.TYPE_CHAR:
                             GenerateOperation(OperationTypeDefinition.op_store);
                             gen4(t.Address);
                             break;
-                        case 4:
+                        case DataTypeDefinition.TYPE_INT:
                             GenerateOperation(OperationTypeDefinition.op_storei);
                             gen4(t.Address);
                             break;
-                        case 8:
+                        case DataTypeDefinition.TYPE_FLOAT:
                             GenerateOperation(OperationTypeDefinition.op_storef);
                             gen4(t.Address);
                             break;
@@ -680,7 +680,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
 
 
 
-        public void gen8(double val)
+        public void gen8(float val)
         {
             var bytes = BitConverter.GetBytes(val);
             foreach (var b in bytes)
@@ -714,7 +714,7 @@ namespace CompilersFinalProject.Compiler.SemanticAnalysis
             
         }
 
-        public void save8(double val, int pos)
+        public void save8(float val, int pos)
         {
             var bytes = BitConverter.GetBytes(val);
             foreach (var b in bytes)

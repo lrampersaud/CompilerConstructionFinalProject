@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CompilersFinalProject.Compiler.Scanning
 {
-    //http://blogs.microsoft.co.il/sasha/2010/10/06/writing-a-compiler-in-c-lexical-analysis/
+   
     public class Scanner
     {
         private string _source;

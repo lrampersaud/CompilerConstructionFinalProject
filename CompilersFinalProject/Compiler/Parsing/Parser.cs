@@ -134,11 +134,15 @@ namespace CompilersFinalProject.Compiler.Parsing
 
                         //push the return to position
                         semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_pushi);
-                        semanticAnalyzer.gen4(semanticAnalyzer.ip);
+                        int hole = semanticAnalyzer.ip;
+                        semanticAnalyzer.gen4(0);
 
                         //jump to procedure
                         semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
                         semanticAnalyzer.gen4(symVar.Address);
+
+                        semanticAnalyzer.gen_Address(semanticAnalyzer.ip, hole);
+
 
                     }
                 }
@@ -322,11 +326,15 @@ namespace CompilersFinalProject.Compiler.Parsing
                 semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_jmp);
                 semanticAnalyzer.gen4(beginFor);
 
+                
+
                 scanner.Match(TokenTypeDefinition.TK_END);
                 scanner.Match(TokenTypeDefinition.TK_SEMI);
 
                 semanticAnalyzer.gen_Address(semanticAnalyzer.ip, save_ip);
-                
+
+                semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_pop);
+
 
             }
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_CASE)
@@ -433,9 +441,11 @@ namespace CompilersFinalProject.Compiler.Parsing
             else if (scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_OUT)
             {
                 scanner.Match(TokenTypeDefinition.TK_OUT);
+                semanticAnalyzer.E();
+
                 semanticAnalyzer.GenerateOperation(OperationTypeDefinition.op_out);
 
-                semanticAnalyzer.E();
+                
 
                 if(scanner.CurrentToken.TokenTypeDefinition == TokenTypeDefinition.TK_SEMI)
                 scanner.Match(TokenTypeDefinition.TK_SEMI);
@@ -738,8 +748,8 @@ namespace CompilersFinalProject.Compiler.Parsing
                     case (int)OperationTypeDefinition.op_fjmp:
                         {
                             strCode += "fjmp ";
-                            strCode += BitConverter.ToSingle((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
-                            cp += 8;
+                            strCode += BitConverter.ToSingle((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_tjmp:
@@ -771,8 +781,8 @@ namespace CompilersFinalProject.Compiler.Parsing
                     case (int)OperationTypeDefinition.op_pushf:
                         {
                             strCode += "pushf ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
-                            cp += 8;
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_popf:
@@ -791,8 +801,8 @@ namespace CompilersFinalProject.Compiler.Parsing
                     case (int)OperationTypeDefinition.op_fetchf:
                         {
                             strCode += "fetchf ";
-                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0);
-                            cp += 8;
+                            strCode += BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
+                            cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fetch:
@@ -1104,7 +1114,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.i < b.i)
+                            if (a.i > b.i)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1130,7 +1140,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.i > b.i)
+                            if (a.i < b.i)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1156,7 +1166,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.i <= b.i)
+                            if (a.i >= b.i)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1182,7 +1192,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.i >= b.i)
+                            if (a.i <= b.i)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1260,7 +1270,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.f < b.f)
+                            if (a.f > b.f)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1286,7 +1296,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.f > b.f)
+                            if (a.f < b.f)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1312,7 +1322,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.f <= b.f)
+                            if (a.f >= b.f)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1338,7 +1348,7 @@ namespace CompilersFinalProject.Compiler.Parsing
                             StackPointer a = myStack.Pop();
                             StackPointer b = myStack.Pop();
 
-                            if (a.f >= b.f)
+                            if (a.f <= b.f)
                             {
                                 myStack.Push(new StackPointer
                                 {
@@ -1382,18 +1392,15 @@ namespace CompilersFinalProject.Compiler.Parsing
                         }
                     case (int)OperationTypeDefinition.op_jmp:
                         {
-                            StackPointer a = myStack.Pop();
                             int pos = BitConverter.ToInt32((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0);
-                            cp += 4;
-                            if (a.i == 0)
-                            {
-                                cp = pos;
-                            }
+                            cp = pos;
+                            
                             break;
                         }
                     case (int)OperationTypeDefinition.op_jmps:
                         {
-                            
+                            StackPointer a = myStack.Pop();
+                            cp = a.i;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fjmp:
@@ -1449,10 +1456,10 @@ namespace CompilersFinalProject.Compiler.Parsing
                             myStack.Push(new StackPointer
                             {
                                 i = 0,
-                                f = BitConverter.ToSingle((byte[])semanticAnalyzer.code.Skip(cp).Take(8).Select(p => (byte)p).ToArray(), 0),
+                                f = BitConverter.ToSingle((byte[])semanticAnalyzer.code.Skip(cp).Take(4).Select(p => (byte)p).ToArray(), 0),
                                 b = false
                             });
-                            cp += 8;
+                            cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_popf:
@@ -1483,10 +1490,10 @@ namespace CompilersFinalProject.Compiler.Parsing
                             myStack.Push(new StackPointer
                             {
                                 i = 0,
-                                f = BitConverter.ToInt32((byte[])semanticAnalyzer.data.Skip(pos).Take(8).Select(p => (byte)p).ToArray(), 0),
+                                f = BitConverter.ToInt32((byte[])semanticAnalyzer.data.Skip(pos).Take(4).Select(p => (byte)p).ToArray(), 0),
                                 b = false
                             });
-                            cp += 8;
+                            cp += 4;
                             break;
                         }
                     case (int)OperationTypeDefinition.op_fetch:

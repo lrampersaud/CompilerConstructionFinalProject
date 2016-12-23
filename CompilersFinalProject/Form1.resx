@@ -120,20 +120,23 @@
   <data name="tbEditor.Text" xml:space="preserve">
     <value>program HelloWorld;
 var x, y: integer;
-procedure findMin(a, b: integer); 
+procedure squared(); 
 begin
-   if a &lt; b then
-      a:= b;
-   else
-      b:= a;
+      x:= x*x;
 end;
 
 begin
+
+x:=4;
 
 if x&lt;5 then
     x:=5;
 else
     x:=6;
+
+out x;
+
+x:=7;
 
 case x of
 5: y:=x;
@@ -141,23 +144,34 @@ case x of
 7: y:=x+8;
 end;
 
+out y;
+
 y:=1;
 while y&lt;4 do
 begin
    y:=y+1;
 end;
 
+out y;
+
 for y:=1 to 10 do
 begin
     x:=x+1;
 end;
 
+out x;
+
+x:=2;
+
 repeat
    x := x + 1;
 until x &gt;10;
 
+out x;
 
-findMin(x,y);
+squared();
+
+out x;
 
 end</value>
   </data>
